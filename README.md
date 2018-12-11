@@ -48,7 +48,7 @@ The function will throw `TypeError`'s if you provide incorrect parameters.
 | `options.algorithm`  | *string*  | `sha256`  | Your hashing algorithim  |
 | `options.identifier`  | *string*  | `HMAC`  | The start of your `options.header` should start with this  |
 | `options.header`  | *string*  | `authentication`  | The header the HMAC is located, should always be lowercase (express lowercases headers)  |
-| `options.maxInterval`  | *integer*  | `60 * 5`  | The amount of time you would like a request to be valid for, in seconds. See [time based protection against relay attacks](#relay-attacks) for more information  |
+| `options.maxInterval`  | *integer*  | `60 * 5`  | The amount of time you would like a request to be valid for, in seconds. See [time based protection against replay attacks](#replay-attacks) for more information  |
 | `options.error`  | *string*  | `Invalid request`  | The text you would like to respond with if the request is invalid  |
 
 ## Structuring your HMAC header
@@ -103,7 +103,7 @@ hmac.update(contentHash.digest('hex'));
 console.log(hmac.digest('hex'));
 ```
 
-## Relay attacks
+## Replay attacks
 
 The parameter `options.maxInterval` is the amount of time in seconds that a request is valid. We compare the unix timestamp sent in the HMAC header to the current time on the server. If the time difference is greater than `options.maxInterval` we reject the request.
 
