@@ -52,6 +52,7 @@ module.exports = function(secret, options = {}) {
             return response.status(401).send(options.error);
         }
 
+        hmac.update(unixMatch[1]); // add timestamp provided in header to make sure it hasn't been changed
         hmac.update(request.method); // add verb e.g POST, GET
         hmac.update(request.baseUrl); // add url e.g /api/order
 

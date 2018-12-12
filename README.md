@@ -73,7 +73,7 @@ This example uses the default `options.header` and `options.identifier`. These w
 
 ## Generating your HMAC digest
 
-The HMAC signature is 3 parts, joined **without** a seperator. **VERB**, **ROUTE** and **MD5 CONTENT HASH**
+The HMAC signature is 4 parts, joined **without** a seperator. **UNIX TIMESTAMP**, **VERB**, **ROUTE** and **MD5 CONTENT HASH**
 
 Below is an example request and how we would build that request's HMAC
 
@@ -92,6 +92,9 @@ Date: Tue, 11 Dec 2018 15:09:44 GMT
 const crypto = require('crypto');
 
 const hmac = crypto.createHmac('sha256', 'secret');
+const time = Math.floor(Date.now() / 1000).toString();
+
+hmac.update(time);
 hmac.update('POST');
 hmac.update('/api/order');
 
@@ -100,12 +103,14 @@ contentHash.update(JSON.stringify({"foo": "bar"}));
 
 hmac.update(contentHash.digest('hex'));
 
-console.log(hmac.digest('hex'));
+console.log(`HMAC ${time}:${hmac.digest('hex')}`);
 ```
 
 ## Replay attacks
 
 The parameter `options.maxInterval` is the amount of time in seconds that a request is valid. We compare the unix timestamp sent in the HMAC header to the current time on the server. If the time difference is greater than `options.maxInterval` we reject the request.
+
+The unix timestamp sent in the header is also included in the HMAC digest, this is to prevent someone replicating a request and just changing the unix timestamp to be in a valid range of `options.maxInterval`
 
 ## Credits
 
