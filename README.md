@@ -2,7 +2,7 @@
 
 ## Description
 
-This module provides Express middleware for HMAC authentication. Zero dependencies, support for all node hash algorithms, time based protection against replay attacks.
+This module provides Express middleware for HMAC authentication. Zero dependencies, timing safe, support for all node hash algorithms, time based protection against replay attacks.
 
 ## Installation
 
