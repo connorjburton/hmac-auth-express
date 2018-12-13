@@ -67,7 +67,7 @@ module.exports = function(secret, options = {}) {
         }
 
         const hmacDigest = hmac.digest();
-        const sourceDigest = stringToBuffer(hashMatch[1]); // convert string to buffer
+        const sourceDigest = stringToBuffer(hashMatch[1]);
         if (hmacDigest.length !== sourceDigest.length || !crypto.timingSafeEqual(hmacDigest, sourceDigest)) {
             console.error('HMAC\'s did not match');
             return response.status(401).send(options.error);

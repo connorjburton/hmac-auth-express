@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/connorjburton/hmac-auth-express/issues"
   },
-  "homepage": "https://github.com/connorjburton/hmac-auth-express#readme"
+  "homepage": "https://github.com/connorjburton/hmac-auth-express#readme",
+  "devDependencies": {
+    "ava": "1.0.0-rc.2",
+    "sinon": "^7.2.0"
+  }
 }
