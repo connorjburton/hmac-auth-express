@@ -54,7 +54,7 @@ module.exports = function(secret, options = {}) {
 
         hmac.update(unixMatch[1]); // add timestamp provided in header to make sure it hasn't been changed
         hmac.update(request.method); // add verb e.g POST, GET
-        hmac.update(request.baseUrl); // add url e.g /api/order
+        hmac.update(request.originalUrl); // add url e.g /api/order
 
         // if we have a request body, create a md5 hash of it and add it to the hmac
         if (Object.keys(request.body).length) {
