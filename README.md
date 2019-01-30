@@ -49,7 +49,34 @@ The function will throw `TypeError`'s if you provide incorrect parameters.
 | `options.identifier`  | *string*  | `HMAC`  | The start of your `options.header` should start with this  |
 | `options.header`  | *string*  | `authentication`  | The header the HMAC is located, should always be lowercase (express lowercases headers)  |
 | `options.maxInterval`  | *integer*  | `60 * 5`  | The amount of time you would like a request to be valid for, in seconds. See [time based protection against replay attacks](#replay-attacks) for more information  |
-| `options.error`  | *string*  | `Invalid request`  | The text you would like to respond with if the request is invalid  |
+| `options.error`  | *string* or `false`  | `Invalid request`  | The text you would like to respond with if the request is invalid. Use `false` to pass an error to the error handler. See [Error Handling](#error-handling)  |
+
+#### Error Handling
+
+If the HMAC authentication failed, the middleware will by default respond with an http status of `401` and send `options.error` as response body.
+
+If you set `options.error` to `false`, the middleware will pass an error with the code `ERR_HMAC_AUTH_INVALID` to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers).
+
+```javascript
+const hmac = require('hmac-auth-express');
+
+app.use('/api', hmac('secret', {
+  error: false
+});
+
+// ... your app logic ...
+
+app.use((error, req, res, next) => {
+  if (error.code === 'ERR_HMAC_AUTH_INVALID') {
+    res.status(401).json({
+      error: 'Invalid request',
+      info: error.message
+    })
+  } else {
+    // handle other errors of your app
+  }
+})
+```
 
 ## Structuring your HMAC header
 
