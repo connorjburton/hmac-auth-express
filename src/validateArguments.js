@@ -21,7 +21,7 @@ module.exports = function(secret, options) {
         return new TypeError(`Invalid value provided for property options.maxInterval. Expected number but got '${options.maxInterval}' (type: ${typeof options.maxInterval})`);
     }
 
-    if (!options.error || typeof options.error !== 'string') {
-        return new TypeError(`Invalid value provided for property options.error. Expected non-empty string but got '${options.error}' (type: ${typeof options.error})`);
+    if (options.error === undefined || !(options.error === false || typeof options.error === 'string')) {
+        return new TypeError(`Invalid value provided for property options.error. Expected non-empty string or false but got '${options.error}' (type: ${typeof options.error})`);
     }
 }
