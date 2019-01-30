@@ -22,9 +22,9 @@ module.exports = function(secret, options = {}) {
               console.error(msg)
               return response.status(401).send(options.error);
             } else {
-              const error = new Error(msg);
-              error.code = 'ERR_HMAC_AUTH_INVALID';
-              return next(error);
+              const hmacError = new Error(msg);
+              hmacError.code = 'ERR_HMAC_AUTH_INVALID';
+              return next(hmacError);
             }
         }
 
