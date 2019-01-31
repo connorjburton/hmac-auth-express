@@ -33,8 +33,7 @@ app.use('/api', hmac('secret', {
   algorithm: 'sha512',
   identifier: 'APP',
   header: 'authorization',
-  maxInterval: 600,
-  error: 'Sorry, that request wasn\'t valid'
+  maxInterval: 600
 });
 ```
 
@@ -49,31 +48,36 @@ The function will throw `TypeError`'s if you provide incorrect parameters.
 | `options.identifier`  | *string*  | `HMAC`  | The start of your `options.header` should start with this  |
 | `options.header`  | *string*  | `authentication`  | The header the HMAC is located, should always be lowercase (express lowercases headers)  |
 | `options.maxInterval`  | *integer*  | `60 * 5`  | The amount of time you would like a request to be valid for, in seconds. See [time based protection against replay attacks](#replay-attacks) for more information  |
-| `options.error`  | *string* or `false`  | `Invalid request`  | The text you would like to respond with if the request is invalid. Use `false` to pass an error to the error handler. See [Error Handling](#error-handling)  |
 
 #### Error Handling
 
-If the HMAC authentication failed, the middleware will by default respond with an http status of `401` and send `options.error` as response body.
+The middleware will pass an error to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers). You can use the provided `HMACAuthError`, or alternatively check the error by its code `ERR_HMAC_AUTH_INVALID`.
 
-If you set `options.error` to `false`, the middleware will pass an error with the code `ERR_HMAC_AUTH_INVALID` to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers).
+Example:
 
 ```javascript
-const hmac = require('hmac-auth-express');
+const { HMACAuthError } = require('hmac-auth-express/src/errors');
 
-app.use('/api', hmac('secret', {
-  error: false
-});
-
-// ... your app logic ...
-
+// express' error handler
 app.use((error, req, res, next) => {
+  // check by error instance
+  if (error instanceof HMACAuthError) {
+    res.status(401).json({
+      error: 'Invalid request',
+      info: error.message
+    })
+  }
+
+  // alternative: check by error code
   if (error.code === 'ERR_HMAC_AUTH_INVALID') {
     res.status(401).json({
       error: 'Invalid request',
       info: error.message
     })
-  } else {
-    // handle other errors of your app
+  }
+
+  else {
+    // ... handle other errors
   }
 })
 ```
