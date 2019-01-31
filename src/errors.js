@@ -9,5 +9,5 @@ module.exports.HMACAuthError = class HMACAuthError extends Error {
         this.status = 401;
         this.statusCode = 401;
         this.status_code = 401;
-  }
+    }
 }
