@@ -1,13 +1,13 @@
 const crypto = require('crypto');
 const stringToBuffer = require('./stringToBuffer');
 const validateArguments = require('./validateArguments');
+const { HMACAuthError } = require('./errors');
 
 module.exports = function(secret, options = {}) {
     options.algorithm = options.algorithm || 'sha256';
     options.identifier = options.identifier || 'HMAC';
     options.header = options.header || 'authentication';
     options.maxInterval = options.maxInterval || 60 * 5;
-    options.error = options.error || 'Invalid request';
 
     const error = validateArguments(secret, options);
     if (error) {
@@ -19,37 +19,32 @@ module.exports = function(secret, options = {}) {
 
         // checked the header we specified exists in request headers
         if (!(options.header in request.headers)) {
-            console.error(`Header provided not in sent headers. Expected ${options.header} but not found in request.headers`);
-            return response.status(401).send(options.error);
+            return next(new HMACAuthError(`Header provided not in sent headers. Expected ${options.header} but not found in request.headers`));
         }
 
         // check the header we specified has the identifier we specified
         if (!request.headers[options.header].startsWith(options.identifier)) {
-            console.error(`Header did not start with correct identifier. Expected ${options.identifier} but not found in options.header`);
-            return response.status(401).send(options.error);
+            return next(new HMACAuthError(`Header did not start with correct identifier. Expected ${options.identifier} but not found in options.header`));
         }
 
         // is the unix timestamp present in the header
         const unixRegex = /(\d{1,10}):/;
         const unixMatch = unixRegex.exec(request.headers[options.header]);
         if (!unixMatch || unixMatch.length !== 2) {
-            console.error('Unix timestamp was not present in header');
-            return response.status(401).send(options.error);
+            return next(new HMACAuthError('Unix timestamp was not present in header'));
         }
 
         // is the unix timestamp difference to current timestamp larger than maxInterval
         const timeDiff = Math.floor(Date.now() / 1000) - parseInt(unixMatch[1]);
         if (timeDiff > options.maxInterval || timeDiff < 0) {
-            console.error('Time difference between generated and requested time is too great');
-            return response.status(401).send(options.error);
+            return next(new HMACAuthError('Time difference between generated and requested time is too great'));
         }
 
         // check HMAC digest exists in header
         const hashRegex = /:(.*$)/;
         const hashMatch = hashRegex.exec(request.headers[options.header]);
         if (hashMatch.length !== 2) {
-            console.error('HMAC digest was not present in header');
-            return response.status(401).send(options.error);
+            return next(new HMACAuthError('HMAC digest was not present in header'));
         }
 
         hmac.update(unixMatch[1]); // add timestamp provided in header to make sure it hasn't been changed
@@ -68,8 +63,7 @@ module.exports = function(secret, options = {}) {
 
         // use timing safe check to prevent timing attacks
         if (hmacDigest.length !== sourceDigest.length || !crypto.timingSafeEqual(hmacDigest, sourceDigest)) {
-            console.error('HMAC\'s did not match');
-            return response.status(401).send(options.error);
+            return next(new HMACAuthError('HMAC\'s did not match'));
         }
 
         return next();

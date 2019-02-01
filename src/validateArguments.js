@@ -20,8 +20,4 @@ module.exports = function(secret, options) {
     if (!options.maxInterval || typeof options.maxInterval !== 'number' || Number.isNaN(options.maxInterval)) {
         return new TypeError(`Invalid value provided for property options.maxInterval. Expected number but got '${options.maxInterval}' (type: ${typeof options.maxInterval})`);
     }
-
-    if (!options.error || typeof options.error !== 'string') {
-        return new TypeError(`Invalid value provided for property options.error. Expected non-empty string but got '${options.error}' (type: ${typeof options.error})`);
-    }
 }
