@@ -2,7 +2,7 @@
 
 ## Migrating from 2.x.x to 3.0.0
 
-In case of an error (e.g. the hmac verification failed), the middleware won't anymore send a response by itself. Instead an error will be passed to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers).
+In case of an error (e.g. the hmac verification failed), the middleware will no longer send a response by itself. Instead an error will be passed to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers).
 
 - `options.error` is removed and will be ignored.
 
