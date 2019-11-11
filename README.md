@@ -94,7 +94,7 @@ This example uses the default `options.header` and `options.identifier`. These w
 
 #### Constructing the HMAC
 
-`Authencation:` This is the header you send in the request that contains the HMAC. This is what the middleware will look for.
+`Authentication:` This is the header you send in the request that contains the HMAC. This is what the middleware will look for.
 
 `HMAC` This is the identifier the middleware will look for, this is fine to be left as the default
 
