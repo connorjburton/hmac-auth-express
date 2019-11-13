@@ -1,6 +1,6 @@
 # Migration Guide
 
-## Migrating from 3.x.x to 4.0.0
+## Migrating from 3.x.x to 4.0.0 [#2](https://github.com/connorjburton/hmac-auth-express/issues/2)
 
 Previously, the documentation incorrectly stated the header and HMAC digest expected a UNIX timestamp, this however was incorrect as the middleware expected a `UNIX timestamp / 1000`. `4.0.0` now expects you to actually pass a UNIX timestamp.
 
@@ -23,7 +23,7 @@ Previously, the documentation incorrectly stated the header and HMAC digest expe
   console.log(`HMAC ${time}:${hmac.digest('hex')}`);
   ```
 
-## Migrating from 2.x.x to 3.0.0
+## Migrating from 2.x.x to 3.0.0 [#1](https://github.com/connorjburton/hmac-auth-express/issues/1)
 
 In case of an error (e.g. the hmac verification failed), the middleware will no longer send a response by itself. Instead an error will be passed to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers).
 
