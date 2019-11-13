@@ -46,7 +46,7 @@ describe('hmac', () => {
         
         const middleware = hmac('secret', { algorithm: 'ripemd160' });
 
-        middleware(mockedRequest({ headers: { authentication: 'HMAC 1573504737300:b55d3ad0b64e106655871bbe7e0d1f55a1f81f7b'}}), undefined, spies.next);
+        middleware(mockedRequest({ headers: { authentication: 'HMAC 1573504737300:b55d3ad0b64e106655871bbe7e0d1f55a1f81f7b' }}), undefined, spies.next);
 
         expect(spies.next).toHaveBeenLastCalledWith();
 
