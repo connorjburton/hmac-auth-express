@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.vscode/launch.json` that includes test configuration for easily debugging tests
 
 ### Changed
-- **Breaking** The unix timestamp sent before the HMAC digest is now expected to be 13 characters long, not 10 (i.e already divided by `1000`). See [Migration Guide](https://github.com/connorjburton/hmac-auth-express/blob/master/MIGRATION_GUIDE.md#migrating-from-3xx-to-400)
-- Improved validation for checking if the HMAC digest exists in the daer
+- **Breaking** The UNIX timestamp's used is now expected to be 13 characters long, not 10 (i.e already divided by `1000`). See [Migration Guide](https://github.com/connorjburton/hmac-auth-express/blob/master/MIGRATION_GUIDE.md#migrating-from-3xx-to-400)
+- Improved validation for checking if the HMAC digest exists in the header
 - Improved validation for checking if `request.body` is set
 
 ## [3.0.0] - 2019-01-02

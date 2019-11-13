@@ -2,7 +2,7 @@
 
 ## Migrating from 3.x.x to 4.0.0
 
-Previously, the documentation incorrectly stated the header expected a UNIX timestamp, this however was incorrect as the middleware expected a `UNIX timestamp / 1000`. `4.0.0` now expects you to actually pass a UNIX timestamp.
+Previously, the documentation incorrectly stated the header and HMAC digest expected a UNIX timestamp, this however was incorrect as the middleware expected a `UNIX timestamp / 1000`. `4.0.0` now expects you to actually pass a UNIX timestamp.
 
   ```diff
   const crypto = require('crypto');
