@@ -2,7 +2,7 @@
 
 ## Description
 
-This module provides Express middleware for HMAC authentication. Zero dependencies, timing safe, support for all node hash algorithms, time based protection against replay attacks.
+This package provides [Express](https://expressjs.com/) middleware for HMAC authentication. Zero dependencies, timing safe, 100% code coverage, support for all node hash algorithms, replay attacks prevention.
 
 ## Installation
 
@@ -90,29 +90,29 @@ Now you have configured your HMAC middleware, you need to structure your HMAC in
 
 This example uses the default `options.header` and `options.identifier`. These will be different if you override said defaults
 
-`Authentication: HMAC 1544528632:265dbc2a5d585adea736a0c68a9010569a43a8d6ed9ce2041b67fd385a3f84f9`
+`Authentication: HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86`
 
 #### Constructing the HMAC
 
-`Authencation:` This is the header you send in the request that contains the HMAC. This is what the middleware will look for.
+`Authentication:` This is the header you send in the request that contains the HMAC. This is what the middleware will look for.
 
 `HMAC` This is the identifier the middleware will look for, this is fine to be left as the default
 
-`1544528632` This is the unix timestamp of when the request was sent
+`1573504737300` This is the UNIX timestamp of when the request was sent
 
-`265dbc2a5d585adea736a0c68a9010569a43a8d6ed9ce2041b67fd385a3f84f9` This is the HMAC digest, see [generating your HMAC digest](#generating-your-hmac-digest)
+`76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86` This is the HMAC digest, see [generating your HMAC digest](#generating-your-hmac-digest)
 
 ## Generating your HMAC digest
 
-The HMAC signature is 4 parts, joined **without** a seperator. **UNIX TIMESTAMP**, **VERB**, **ROUTE** and **MD5 CONTENT HASH**
+The HMAC signature is 4 parts (1 part optional) joined **without** a seperator. **UNIX TIMESTAMP**, **VERB**, **ROUTE** and optionally **MD5 JSON STRINGIFIED CONTENT HASH**
 
 Below is an example request and how we would build that request's HMAC
 
 ```
 POST http://www.domain.com/api/order HTTP/1.0
-Authentication: HMAC 1544540984:265dbc2a5d585adea736a0c68a9010569a43a8d6ed9ce2041b67fd385a3f84f9
+Authentication: HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
 Content-Type: application/json
-Date: Tue, 11 Dec 2018 15:09:44 GMT
+Date: Wed, 13 Nov 2019 22:06:01 GMT
 
 {
   "foo": "bar"
@@ -123,7 +123,7 @@ Date: Tue, 11 Dec 2018 15:09:44 GMT
 const crypto = require('crypto');
 
 const hmac = crypto.createHmac('sha256', 'secret');
-const time = Math.floor(Date.now() / 1000).toString();
+const time = Date.now().toString();
 
 hmac.update(time);
 hmac.update('POST');

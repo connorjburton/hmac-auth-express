@@ -28,22 +28,22 @@ module.exports = function(secret, options = {}) {
         }
 
         // is the unix timestamp present in the header
-        const unixRegex = /(\d{1,10}):/;
+        const unixRegex = /(\d{1,13}):/;
         const unixMatch = unixRegex.exec(request.headers[options.header]);
         if (!unixMatch || unixMatch.length !== 2) {
             return next(new HMACAuthError('Unix timestamp was not present in header'));
         }
 
         // is the unix timestamp difference to current timestamp larger than maxInterval
-        const timeDiff = Math.floor(Date.now() / 1000) - parseInt(unixMatch[1]);
+        const timeDiff = Math.floor(Date.now() / 1000) - Math.floor(parseInt(unixMatch[1]) / 1000);
         if (timeDiff > options.maxInterval || timeDiff < 0) {
             return next(new HMACAuthError('Time difference between generated and requested time is too great'));
         }
 
         // check HMAC digest exists in header
-        const hashRegex = /:(.*$)/;
+        const hashRegex = /:(.{1,}$)/;
         const hashMatch = hashRegex.exec(request.headers[options.header]);
-        if (hashMatch.length !== 2) {
+        if (!Array.isArray(hashMatch)) {
             return next(new HMACAuthError('HMAC digest was not present in header'));
         }
 
@@ -52,7 +52,7 @@ module.exports = function(secret, options = {}) {
         hmac.update(request.originalUrl); // add url e.g /api/order
 
         // if we have a request body, create a md5 hash of it and add it to the hmac
-        if (Object.keys(request.body).length) {
+        if (typeof request.body === 'object' && !Array.isArray(request.body) && Object.keys(request.body).length) {
             const hash = crypto.createHash('md5');
             hash.update(JSON.stringify(request.body)); // we add it as a json string
             hmac.update(hash.digest('hex'));

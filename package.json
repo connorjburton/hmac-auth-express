@@ -1,10 +1,10 @@
 {
   "name": "hmac-auth-express",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/jest tests"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/connorjburton/hmac-auth-express/issues"
   },
-  "homepage": "https://github.com/connorjburton/hmac-auth-express#readme"
+  "homepage": "https://github.com/connorjburton/hmac-auth-express#readme",
+  "devDependencies": {
+    "jest": "^24.9.0"
+  }
 }
