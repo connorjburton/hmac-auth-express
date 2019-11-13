@@ -90,7 +90,7 @@ Now you have configured your HMAC middleware, you need to structure your HMAC in
 
 This example uses the default `options.header` and `options.identifier`. These will be different if you override said defaults
 
-`Authentication: HMAC 1544528632:265dbc2a5d585adea736a0c68a9010569a43a8d6ed9ce2041b67fd385a3f84f9`
+`Authentication: HMAC 1544528632000:265dbc2a5d585adea736a0c68a9010569a43a8d6ed9ce2041b67fd385a3f84f9`
 
 #### Constructing the HMAC
 
@@ -98,13 +98,13 @@ This example uses the default `options.header` and `options.identifier`. These w
 
 `HMAC` This is the identifier the middleware will look for, this is fine to be left as the default
 
-`1544528632` This is the unix timestamp of when the request was sent
+`1544528632000` This is the UNIX timestamp of when the request was sent
 
 `265dbc2a5d585adea736a0c68a9010569a43a8d6ed9ce2041b67fd385a3f84f9` This is the HMAC digest, see [generating your HMAC digest](#generating-your-hmac-digest)
 
 ## Generating your HMAC digest
 
-The HMAC signature is 4 parts, joined **without** a seperator. **UNIX TIMESTAMP**, **VERB**, **ROUTE** and **MD5 CONTENT HASH**
+The HMAC signature is 4 parts (1 part optional) joined **without** a seperator. **UNIX TIMESTAMP**, **VERB**, **ROUTE** and optionally **MD5 JSON STRINGIFIED CONTENT HASH**
 
 Below is an example request and how we would build that request's HMAC
 
@@ -123,7 +123,7 @@ Date: Tue, 11 Dec 2018 15:09:44 GMT
 const crypto = require('crypto');
 
 const hmac = crypto.createHmac('sha256', 'secret');
-const time = Math.floor(Date.now() / 1000).toString();
+const time = Date.now().toString();
 
 hmac.update(time);
 hmac.update('POST');
