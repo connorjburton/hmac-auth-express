@@ -40,6 +40,19 @@ describe('hmac', () => {
         global.Date.now = originalDateNow;
     });
 
+    test('passes hmac with different algorithm', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504737300;
+        
+        const middleware = hmac('secret', { algorithm: 'ripemd160' });
+
+        middleware(mockedRequest({ headers: { authentication: 'HMAC 1573504737300:b55d3ad0b64e106655871bbe7e0d1f55a1f81f7b'}}), undefined, spies.next);
+
+        expect(spies.next).toHaveBeenLastCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
     test('passes hmac without body', () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1573504737300;
@@ -54,6 +67,21 @@ describe('hmac', () => {
         }), undefined, spies.next);
 
         expect(spies.next).toHaveBeenLastCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
+    test('fails hmac not matching', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504737300;
+
+        const middleware = hmac('wrongsecret');
+
+        middleware(mockedRequest(), undefined, spies.next);
+
+        const calledArg = spies.next.mock.calls.pop()[0];
+        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg.message).toBe('HMAC\'s did not match');
 
         global.Date.now = originalDateNow;
     });
@@ -181,5 +209,26 @@ describe('hmac', () => {
         expect(calledArg.message).toBe('HMAC digest was not present in header');
 
         global.Date.now = originalDateNow;
+    });
+
+    test('passing incorrect secret throws an error', () => {
+        expect(() => hmac('')).toThrowError(new TypeError(`Invalid value provided for property secret. Expected non-empty string but got '' (type: string)`));
+        expect(() => hmac(23)).toThrowError(new TypeError(`Invalid value provided for property secret. Expected non-empty string but got '23' (type: number)`));
+    });
+
+    test('passing incorrect algorithm throws an error', () => {
+        expect(() => hmac('secret', { algorithm: 'sha111' })).toThrowError(new TypeError(`Invalid value provided for property options.algorithm. Expected value from crypto.getHashes() but got sha111`));
+    });
+
+    test('passing incorrect identifier throws an error', () => {
+        expect(() => hmac('secret', { identifier: 123 })).toThrowError(new TypeError(`Invalid value provided for property options.identifier. Expected non-empty string but got '123' (type: number)`));
+    });
+
+    test('passing incorrect header throws an error', () => {
+        expect(() => hmac('secret', { header: 123 })).toThrowError(new TypeError(`Invalid value provided for property options.header. Expected non-empty string but got '123' (type: number)`));
+    });
+
+    test('passing incorrect maxInterval throws an error', () => {
+        expect(() => hmac('secret', { maxInterval: 'abc' })).toThrowError(new TypeError(`Invalid value provided for property options.maxInterval. Expected number but got 'abc' (type: string)`));
     });
 });
