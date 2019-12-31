@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- 12
+deploy:
+  provider: npm
+  email: connorjburton@gmail.com
+  api_key:
+    secure: Nx/gnHqGHtJ5qfYLEjXGJBV4weEO4OPv8K2XorijaobaRpHFQwmpabnmSR2dIu+TYMtqtssl/5hWmPnBWeZlTf02ICFjtbNDydZOmv8zMXiwM2vFci7X7wR+K98DfoXTRHk0wR0jH+5qCcmFz4L/zfaSAaTn7r0o6Kms16t2oKRbqOm6Mv7TbxMoGV2ZcWgt0ncSj/BWGTXGLu2RIcWL0sUj6MjMbi5A09U/GmdN4vjr/CSqFckV2Kzxsnj0C0ShPTM4pewlUF7t2KacYJEtXED8nc+mTB8cqiiQZhnLXo07ERdzmXCOgy/ktFB3CKL00tstFd0qtvHhlWzx8rE+ANPiSh/w5UKiXTp92XK4AEzgXHnHBG58KmL+qNai6QskvWDjTtd1ujbmzNtORFmw8f5v+agNjxyd9IX++LK80kISs7cBJ6fqd+9tMn+ONmWUDhPNSt9TRdSa3jI72EDix3u26VZrCzp482hQPDKaO6PO45HCqYweexgJCA8KrUBaI0YCkZgQ8IHuwOopyw0BcM3ev0O5S6hpQhSwmdOLHiPoQ2KWr+0fQXMijwoVUVRrvuFmsJVABpNzN/PL52oaqIMWXfwI5ODiVvAklv91VlKOK5x6MHBx8jdxo0awTvQIS64Un8erCVlxaPtQO4plFleZ2QwzFiHNqu5n3GqYzHc=
+  on:
+    repo: connorjburton/hmac-auth-express
+    branch: master
