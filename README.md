@@ -1,5 +1,7 @@
 # HMAC Auth Express
 
+[![Build Status](https://travis-ci.org/connorjburton/hmac-auth-express.svg?branch=master)](https://travis-ci.org/connorjburton/hmac-auth-express)
+
 ## Description
 
 This package provides [Express](https://expressjs.com/) middleware for HMAC authentication. Zero dependencies, timing safe, 100% code coverage, support for all node hash algorithms, replay attacks prevention.
