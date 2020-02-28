@@ -9,6 +9,7 @@ module.exports = function(secret, options = {}) {
     options.header = options.header || 'authentication';
     options.maxInterval = options.maxInterval || 60 * 5;
     options.timeProtection = options.timeProtection || true;
+    options.timeAdjust = options.timeAdjust || 0;
 
     const error = validateArguments(secret, options);
     if (error) {
@@ -37,7 +38,7 @@ module.exports = function(secret, options = {}) {
 
         // is the unix timestamp difference to current timestamp larger than maxInterval
         const timeDiff = Math.floor(Date.now() / 1000) - Math.floor(parseInt(unixMatch[1]) / 1000);
-        if (options.timeProtection && (timeDiff > options.maxInterval || timeDiff < 0)) {
+        if (options.timeProtection && (timeDiff > options.maxInterval || timeDiff < options.timeAdjust)) {
             return next(new HMACAuthError('Time difference between generated and requested time is too great'));
         }
 
