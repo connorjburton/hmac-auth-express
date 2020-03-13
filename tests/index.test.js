@@ -196,6 +196,32 @@ describe('hmac', () => {
         global.Date.now = originalDateNow;
     });
 
+    test('passes if time before timestamp in hmac but minInterval is configured', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504736300;
+
+        const middleware = hmac('secret', { minInterval: -1 });
+
+        middleware(mockedRequest(), undefined, spies.next);
+
+        expect(spies.next).toHaveBeenLastCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
+    test('passes if time protection is disabled', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573508732400;
+
+        const middleware = hmac('secret', { timeProtection: false });
+
+        middleware(mockedRequest(), undefined, spies.next);
+
+        expect(spies.next).toHaveBeenLastCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
     test('fails if missing hmac digest', () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1573504737300;
