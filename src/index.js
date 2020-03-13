@@ -36,8 +36,6 @@ module.exports = function(secret, options = {}) {
             return next(new HMACAuthError('Unix timestamp was not present in header'));
         }
 
-        console.log(options.timeProtection);
-
         // is the unix timestamp difference to current timestamp larger than maxInterval
         const timeDiff = Math.floor(Date.now() / 1000) - Math.floor(parseInt(unixMatch[1]) / 1000);
         if (options.timeProtection && (timeDiff > options.maxInterval || timeDiff < options.minInterval)) {
