@@ -49,7 +49,8 @@ The function will throw `TypeError`'s if you provide incorrect parameters.
 | `options.algorithm`  | *string*  | `sha256`  | Your hashing algorithim  |
 | `options.identifier`  | *string*  | `HMAC`  | The start of your `options.header` should start with this  |
 | `options.header`  | *string*  | `authentication`  | The header the HMAC is located, should always be lowercase (express lowercases headers)  |
-| `options.maxInterval`  | *integer*  | `60 * 5`  | The amount of time you would like a request to be valid for, in seconds. See [time based protection against replay attacks](#replay-attacks) for more information  |
+| `options.maxInterval`  | *integer*  | `60 * 5`  | The amount of time you would like a request to be valid for, in seconds (in the past). See [time based protection against replay attacks](#replay-attacks) for more information  |
+| `options.minInterval`  | *integer*  | `0`  | The amount of time you would like a request to be valid for, in seconds (in the future). See [time based protection against replay attacks](#replay-attacks) for more information  |
 
 #### Error Handling
 
@@ -141,9 +142,11 @@ console.log(`HMAC ${time}:${hmac.digest('hex')}`);
 
 ## Replay attacks
 
-The parameter `options.maxInterval` is the amount of time in seconds that a request is valid. We compare the unix timestamp sent in the HMAC header to the current time on the server. If the time difference is greater than `options.maxInterval` we reject the request.
+The parameter `options.maxInterval` is the amount of time in seconds that a request is valid. We compare the unix timestamp sent in the HMAC header to the current time on the server. If the time difference is greater than `options.maxInterval` request is rejected.
 
-The unix timestamp sent in the header is also included in the HMAC digest, this is to prevent someone replicating a request and just changing the unix timestamp to be in a valid range of `options.maxInterval`
+The unix timestamp sent in the header is also included in the HMAC digest, this is to prevent someone replicating a request and changing the unix timestamp to be in a valid range of `options.maxInterval`
+
+The parameter `options.minInterval` (introduced in `4.1.0`) is the amount of time in seconds that a request is valid for if in the future. This is a common issue for out of sync computer times (the requester time is slightly ahead of the server). By default this value is set to `0`, if you find requests being rejected as they are from the future you may want to adjust this.
 
 ## Credits
 
