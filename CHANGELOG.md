@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] - 2020-08-01
+### Added
+- **Breaking** Support for plain arrays in the request body. Previously a plain array request body would be rejected, this change could potentially allow unexpected behaviour, thus the breaking change.
+### Security
+- Bumped `jest` from `24.9.0` to `26.2.2`
+
 ## [4.1.0] - 2020-03-20
 ### Added
 - `options.minInterval` for out of sync times (requests from the future)

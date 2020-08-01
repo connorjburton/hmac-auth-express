@@ -40,6 +40,19 @@ describe('hmac', () => {
         global.Date.now = originalDateNow;
     });
 
+    test('passes hamc with array as value', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504737300;
+        
+        const middleware = hmac('secret');
+
+        middleware(mockedRequest({ headers: { authentication: 'HMAC 1573504737300:4f1c59c68f09af0790b4531118438ae179689eebc5bb30a8359719e319f70b85' }, body: [1, 2, 3] }), undefined, spies.next);
+
+        expect(spies.next).toHaveBeenLastCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
     test('passes hmac with different algorithm', () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1573504737300;

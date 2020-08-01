@@ -107,7 +107,7 @@ This example uses the default `options.header` and `options.identifier`. These w
 
 ## Generating your HMAC digest
 
-The HMAC signature is 4 parts (1 part optional) joined **without** a seperator. **UNIX TIMESTAMP**, **VERB**, **ROUTE** and optionally **MD5 JSON STRINGIFIED CONTENT HASH**
+The HMAC signature is 4 parts (1 part optional) joined **without** a seperator. **UNIX TIMESTAMP**, **VERB**, **ROUTE** and optionally **MD5 JSON STRINGIFIED REQUEST BODY**
 
 Below is an example request and how we would build that request's HMAC
 
