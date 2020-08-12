@@ -36,7 +36,7 @@ module.exports = function(secret, options = {}) {
         }
 
         // is the unix timestamp difference to current timestamp larger than maxInterval
-        const timeDiff = Math.floor(Date.now() / 1000) - Math.floor(parseInt(unixMatch[1]) / 1000);
+        const timeDiff = Math.floor(Date.now() / 1000) - Math.floor(parseInt(unixMatch[1], 10) / 1000);
         if (timeDiff > options.maxInterval || timeDiff < options.minInterval) {
             return next(new HMACAuthError('Time difference between generated and requested time is too great'));
         }
