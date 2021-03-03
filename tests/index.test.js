@@ -213,7 +213,7 @@ describe('hmac', () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1573504736300;
 
-        const middleware = hmac('secret', { minInterval: -1 });
+        const middleware = hmac('secret', { minInterval: 1 });
 
         middleware(mockedRequest(), undefined, spies.next);
 
@@ -256,5 +256,13 @@ describe('hmac', () => {
 
     test('passing incorrect maxInterval throws an error', () => {
         expect(() => hmac('secret', { maxInterval: 'abc' })).toThrowError(new TypeError(`Invalid value provided for property options.maxInterval. Expected number but got 'abc' (type: string)`));
+    });
+
+    test('passing incorrect minInterval throws an error', () => {
+        expect(() => hmac('secret', { minInterval: 'abc' })).toThrowError(new TypeError(`Invalid value provided for optional property options.minInterval. Expected positive number but got 'abc' (type: string)`));
+    });
+
+    test('passing negative number for minInterval throws an error', () => {
+        expect(() => hmac('secret', { minInterval: -1 })).toThrowError(new TypeError(`Invalid value provided for optional property options.minInterval. Expected positive number but got '-1' (type: number)`));
     });
 });
