@@ -20,4 +20,8 @@ module.exports = function(secret, options) {
     if (!options.maxInterval || typeof options.maxInterval !== 'number' || Number.isNaN(options.maxInterval)) {
         return new TypeError(`Invalid value provided for property options.maxInterval. Expected number but got '${options.maxInterval}' (type: ${typeof options.maxInterval})`);
     }
+
+    if (typeof options.minInterval !== 'number' || Number.isNaN(options.minInterval) || options.minInterval < 0) {
+        return new TypeError(`Invalid value provided for optional property options.minInterval. Expected positive number but got '${options.minInterval}' (type: ${typeof options.minInterval})`);
+    }
 }
