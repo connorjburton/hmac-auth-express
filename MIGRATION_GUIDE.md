@@ -1,5 +1,11 @@
 # Migration Guide
 
+## Migrating to 6.0.0 [#15](https://github.com/connorjburton/hmac-auth-express/issues/15)
+
+Prior to this version, the documentation ambiguously stated that the `options.minInterval` function parameter was to be provided as an integer, missing out the requirement that this should also be negative. `6.0.0` now expects a positive integer value to be provided for the `minInterval` property and will throw a `TypeError` if a negative value is provided. This value is still optional and can be omitted if not required.
+
+
+
 ## Migrating from 3.x.x to 4.0.0 [#2](https://github.com/connorjburton/hmac-auth-express/issues/2)
 
 Previously, the documentation incorrectly stated the header and HMAC digest expected a UNIX timestamp, this however was incorrect as the middleware expected a `UNIX timestamp / 1000`. `4.0.0` now expects you to actually pass a UNIX timestamp.
