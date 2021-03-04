@@ -22,6 +22,6 @@ module.exports = function(secret, options) {
     }
 
     if (typeof options.minInterval !== 'number' || Number.isNaN(options.minInterval) || options.minInterval < 0) {
-        return new TypeError(`Invalid value provided for optional property options.minInterval. Expected positive integer but got '${options.minInterval}' (type: ${typeof options.minInterval})`);
+        return new TypeError(`Invalid value provided for optional property options.minInterval. Expected positive number but got '${options.minInterval}' (type: ${typeof options.minInterval})`);
     }
 }
