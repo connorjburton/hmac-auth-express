@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.0] - 2020-08-12
+### Changed
+- **Breaking** Inversed `timeDiff` value in comparison against `minInterval` option so option parameters are consistent.
+
 ## [5.0.1] - 2020-08-12
 ### Changed
 - Updated `parseInt` call to pass `radix` parameter of `10`
