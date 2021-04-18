@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.0.1] - 2021-04-18
 ### Added
 - Added Github Actions
-### Changed
-- Bumped `jest` from `26.3.0` to `26.6.3`
 ### Removed
 - Removed Travis integration
+### Security
+- Bumped `jest` from `26.3.0` to `27.0.0-next.8`
 
 ## [6.0.0] - 2020-08-12
 ### Changed
