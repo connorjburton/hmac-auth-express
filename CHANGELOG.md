@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.1] - 2021-04-18
+### Added
+- Added Github Actions
+### Changed
+- Bumped `jest` from `26.3.0` to `26.6.3`
+### Removed
+- Removed Travis integration
+
 ## [6.0.0] - 2020-08-12
 ### Changed
 - **Breaking** Inversed `timeDiff` value in comparison against `minInterval` option so option parameters are consistent.
