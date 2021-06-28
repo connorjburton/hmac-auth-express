@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/connorjburton/hmac-auth-express#readme",
   "devDependencies": {
-    "jest": "27.0.5"
+    "jest": "27.0.6"
   }
 }
