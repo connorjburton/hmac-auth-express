@@ -21,7 +21,7 @@ jobs:
     - run: yarn audit
     - run: yarn
     - run: yarn test
-  buildlinux:
+  buildwin:
     runs-on: windows-latest
     strategy:
       matrix:
