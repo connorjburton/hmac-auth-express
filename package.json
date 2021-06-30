@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/connorjburton/hmac-auth-express#readme",
   "devDependencies": {
+    "husky": "^6.0.0",
     "jest": "27.0.6"
   }
 }
