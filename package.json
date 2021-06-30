@@ -23,5 +23,8 @@
     "husky": "^6.0.0",
     "jest": "27.0.6",
     "standard-version": "^9.3.0"
+  },
+  "resolutions": {
+    "standard-version/**/meow/trim-newlines": "4.0.1"
   }
 }
