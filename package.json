@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/jest tests"
+    "test": "./node_modules/.bin/jest tests",
+    "release": "standard-version"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
     "husky": "^6.0.0",
-    "jest": "27.0.6"
+    "jest": "27.0.6",
+    "standard-version": "^9.3.0"
   }
 }
