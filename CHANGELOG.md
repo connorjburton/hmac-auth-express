@@ -1,8 +1,17 @@
 # Changelog
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [7.0.0](https://github.com/connorjburton/hmac-auth-express/compare/v6.0.1...v7.0.0) (2021-07-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* peer dependency may fail installations of users using express <4"
+
+### Bug Fixes
+
+* changes to package.json & e2e test ([4b17f33](https://github.com/connorjburton/hmac-auth-express/commit/4b17f33d4107a47453237781eeccb845347159d0))
 
 ## [6.0.1] - 2021-06-28
 ### Added
