@@ -1,5 +1,4 @@
 import { Server } from 'http';
-import bodyParser from 'body-parser';
 import crypto from 'crypto';
 import express from 'express';
 import got, { Method, Response } from 'got';
@@ -9,7 +8,7 @@ const PORT: number = 3000;
 const SECRET: string = 'secret';
 
 const generate = (body: Record<string, any> | undefined, time: number, method: Method, path: string | undefined): string => {
-    const hmac = crypto.createHmac('sha256', SECRET);
+    const hmac: crypto.Hmac = crypto.createHmac('sha256', SECRET);
 
     hmac.update(time.toString());
     hmac.update(method);
@@ -18,7 +17,7 @@ const generate = (body: Record<string, any> | undefined, time: number, method: M
     }
 
     if (typeof body === 'object') {
-        const contentHash = crypto.createHash('md5');
+        const contentHash: crypto.Hash = crypto.createHash('md5');
         contentHash.update(JSON.stringify(body));
 
         hmac.update(contentHash.digest('hex'));
@@ -33,7 +32,7 @@ describe('e2e', () => {
 
     beforeAll((done: jest.DoneCallback) => {
         app = express();
-        app.use(bodyParser.json());
+        app.use(express.json());
         app.use(hmac(SECRET));
         app.use((err: { stack: object }, _req: express.Request, res: express.Response, next: Function): void => {
             console.error(err.stack);
