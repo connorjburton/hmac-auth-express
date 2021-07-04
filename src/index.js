@@ -3,7 +3,7 @@ const stringToBuffer = require('./stringToBuffer');
 const validateArguments = require('./validateArguments');
 const { HMACAuthError } = require('./errors');
 
-module.exports = function(secret, options = {}) {
+module.exports = function hmac(secret, options = {}) {
     options.algorithm = options.algorithm || 'sha256';
     options.identifier = options.identifier || 'HMAC';
     options.header = options.header || 'authentication';
