@@ -4,8 +4,6 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/connorjburton/hmac-auth-express/Node.js%20CI)
 ![GitHub](https://img.shields.io/github/license/connorjburton/hmac-auth-express)
 
-## Description
-
 This package provides [Express](https://expressjs.com/) middleware for HMAC authentication. Zero dependencies, timing safe, 100% code coverage, support for all node hash algorithms, replay attacks prevention.
 
 ## Installation
