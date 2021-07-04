@@ -15,7 +15,7 @@ const mockedRequest = override => {
     };
 };
 
-describe('hmac', () => {
+describe('unit', () => {
     let spies = {};
     
     beforeEach(() => {
