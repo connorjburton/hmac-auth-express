@@ -2,7 +2,7 @@ import { Server } from 'http';
 import crypto from 'crypto';
 import express from 'express';
 import got, { Method, Response } from 'got';
-import hmac from '../src/index.js';
+import hmac from './../src/index.js';
 
 const PORT: number = 3000;
 const SECRET: string = 'secret';

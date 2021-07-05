@@ -1,7 +1,20 @@
-const hmac = require('./../src/index.js');
-const { HMACAuthError } = require('./../src/errors.js');
+import hmac from './../src/index.js';
+import { HMACAuthError } from './../src/errors.js';
 
-const mockedRequest = override => {
+type MockRequest = {
+    headers: {
+        authentication?: String
+    }
+    method?: 'GET' | 'POST',
+    originalUrl?: String,
+    body?: object | number[],
+}
+
+type Spies = {
+    next: jest.Mock
+}
+
+function mockedRequest(override?: MockRequest): MockRequest {
     return {
         headers: {
             authentication: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
@@ -16,15 +29,12 @@ const mockedRequest = override => {
 };
 
 describe('unit', () => {
-    let spies = {};
-    
-    beforeEach(() => {
-        spies.next = jest.fn();
-    });
+    let spies: Spies = {
+        next: jest.fn()
+    };
 
     afterEach(() => {
         jest.restoreAllMocks();
-        spies = {};
     });
 
     test('passes hmac', () => {
@@ -237,8 +247,11 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
+    // Some peopel aren't going to be using TS, we need to ensure these test still work even though you can't expose the error if you use TS
+    
     test('passing incorrect secret throws an error', () => {
         expect(() => hmac('')).toThrowError(new TypeError(`Invalid value provided for property secret. Expected non-empty string but got '' (type: string)`));
+        // @ts-ignore
         expect(() => hmac(23)).toThrowError(new TypeError(`Invalid value provided for property secret. Expected non-empty string but got '23' (type: number)`));
     });
 
@@ -247,22 +260,27 @@ describe('unit', () => {
     });
 
     test('passing incorrect identifier throws an error', () => {
+        // @ts-ignore
         expect(() => hmac('secret', { identifier: 123 })).toThrowError(new TypeError(`Invalid value provided for property options.identifier. Expected non-empty string but got '123' (type: number)`));
     });
 
     test('passing incorrect header throws an error', () => {
+        // @ts-ignore
         expect(() => hmac('secret', { header: 123 })).toThrowError(new TypeError(`Invalid value provided for property options.header. Expected non-empty string but got '123' (type: number)`));
     });
 
     test('passing incorrect maxInterval throws an error', () => {
+        // @ts-ignore
         expect(() => hmac('secret', { maxInterval: 'abc' })).toThrowError(new TypeError(`Invalid value provided for property options.maxInterval. Expected number but got 'abc' (type: string)`));
     });
 
     test('passing incorrect minInterval throws an error', () => {
+        // @ts-ignore
         expect(() => hmac('secret', { minInterval: 'abc' })).toThrowError(new TypeError(`Invalid value provided for optional property options.minInterval. Expected positive number but got 'abc' (type: string)`));
     });
 
     test('passing negative number for minInterval throws an error', () => {
+        // @ts-ignore
         expect(() => hmac('secret', { minInterval: -1 })).toThrowError(new TypeError(`Invalid value provided for optional property options.minInterval. Expected positive number but got '-1' (type: number)`));
     });
 });
