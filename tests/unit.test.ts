@@ -40,20 +40,16 @@ describe('unit', () => {
     });
 
     test('passes hmac', () => {
-        try {
-            const originalDateNow = Date.now.bind(global.Date);
-            global.Date.now = () => 1573504737300;
-            
-            const middleware = hmac('secret');
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504737300;
+        
+        const middleware = hmac('secret');
 
-            middleware(mockedRequest() as Request, {} as Response, spies.next);
+        middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-            expect(spies.next).toHaveBeenLastCalledWith();
+        expect(spies.next).toHaveBeenLastCalledWith();
 
-            global.Date.now = originalDateNow;
-        } catch (err) {
-            console.log(err);
-        }
+        global.Date.now = originalDateNow;
     });
 
     test('passes hamc with array as value', () => {

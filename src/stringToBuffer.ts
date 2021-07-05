@@ -1,4 +1,4 @@
-export default function(str: string) {
+export default function(str: string): Buffer {
     const bytes: number[] = [];
     
     for (let i = 0; i < str.length; i = i + 2) {
