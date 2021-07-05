@@ -1,11 +1,13 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
-module.exports = function(secret, options) {
+import { HmacOptions } from './index';
+
+export default function(secret: string, options: HmacOptions): TypeError | void {
     if (!secret || typeof secret !== 'string') {
         return new TypeError(`Invalid value provided for property secret. Expected non-empty string but got '${secret}' (type: ${typeof secret})`);
     }
 
-    if (!crypto.getHashes().includes(options.algorithm)) {
+    if (typeof options.algorithm !== 'string' || !crypto.getHashes().includes(options.algorithm)) {
         return new TypeError(`Invalid value provided for property options.algorithm. Expected value from crypto.getHashes() but got ${options.algorithm}`);
     }
 

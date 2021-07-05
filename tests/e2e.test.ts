@@ -2,7 +2,7 @@ import { Server } from 'http';
 import crypto from 'crypto';
 import express from 'express';
 import got, { Method, Response } from 'got';
-import hmac from './../src/index.js';
+import hmac from './../src/index';
 
 const PORT: number = 3000;
 const SECRET: string = 'secret';
@@ -34,7 +34,7 @@ describe('e2e', () => {
         app = express();
         app.use(express.json());
         app.use(hmac(SECRET));
-        app.use((err: { stack: object }, _req: express.Request, res: express.Response, next: Function): void => {
+        app.use((err: { stack: object }, _req: express.Request, res: express.Response, next: express.NextFunction): void => {
             console.error(err.stack);
             res.sendStatus(401);
             next();

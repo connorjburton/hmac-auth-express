@@ -2,9 +2,9 @@
   "name": "hmac-auth-express",
   "version": "7.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
-    "test": "jest tests",
+    "test": "tsc && jest dist/tests",
     "benchmark": "tsc && node benchmark",
     "release": "standard-version"
   },
