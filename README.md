@@ -154,7 +154,7 @@ You can run your own benchmarks by checking out the package and running `yarn be
 
 | Environment  | Operations  | Duration  | ops/second  |
 |---|---|---|---|
-| `Windows 10 Pro, i5-7600K@3.80GHz`  | 1000000  | 24793ms  | ~40334 ops/second  |
+| `Windows 10 Pro, i5-7600K@3.80GHz`  | 1,000,000  | 24,793ms  | ~40,334  |
 
 ## Credits
 
