@@ -62,3 +62,7 @@ typings/
 
 # dist
 /dist
+
+# Can be removed once project is fully converted to typescript and everything can compile to the /dist folder
+benchmark/*.js
+tests/e2e.test.js

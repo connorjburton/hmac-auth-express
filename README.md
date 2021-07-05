@@ -148,6 +148,14 @@ The unix timestamp sent in the header is also included in the HMAC digest, this 
 
 The parameter `options.minInterval` (introduced in `4.1.0`) is the amount of time in seconds that a request is valid for if in the future. This is a common issue for out of sync computer times (the requester time is slightly ahead of the server). By default this value is set to `0`, if you find requests being rejected as they are from the future you may want to adjust this.
 
+## Performance
+
+You can run your own benchmarks by checking out the package and running `yarn benchmark`. Below are the most recent benchmark results.
+
+| Environment  | Operations  | Duration  | ops/second  |
+|---|---|---|---|
+| `Windows 10 Pro, i5-7600K@3.80GHz`  | 1000000  | 24793ms  | ~40334 ops/second  |
+
 ## Credits
 
 Reference article https://www.wolfe.id.au/2012/10/20/what-is-hmac-authentication-and-why-is-it-useful/

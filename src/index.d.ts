@@ -5,4 +5,4 @@ interface hmacOptions {
     maxInterval: number;
     minInterval: number;
 }
-export default function hmac(secret: string): function;
+export default function hmac(secret: string, options?: hmacOptions): function;
