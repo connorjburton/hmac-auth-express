@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { PerformanceObserver, PerformanceEntry, PerformanceObserverEntryList, performance } from 'perf_hooks';
 
-import hmac from './../src/index.js';
+import { HMAC } from './../src/index.js';
 
 type TransformedEntry = {
     operations: number,
@@ -9,7 +9,7 @@ type TransformedEntry = {
     throughput: string
 }
 
-const COUNT: number = 1000000;
+const COUNT = 1000000;
 const REQUEST: Partial<Request> = {
     headers: {
         authentication: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
@@ -31,12 +31,12 @@ function transformObserverEntry(entry: PerformanceEntry): TransformedEntry {
 
 (function run(): void {
     const observer: PerformanceObserver = new PerformanceObserver((items: PerformanceObserverEntryList): void => console.log(items.getEntries().map((entry) => transformObserverEntry(entry))));
-    const middleware = hmac('secret');
+    const middleware = HMAC('secret');
     observer.observe({ type: 'measure' });
 
     performance.mark(`iterations`);
     for (let i = 0; i < COUNT; i++) {
-        middleware(REQUEST as Request, {} as Response, () => {});
+        middleware(REQUEST as Request, {} as Response, jest.fn());
     }
     performance.mark(`endIterations`);
     performance.measure('Total', 'iterations', 'endIterations');

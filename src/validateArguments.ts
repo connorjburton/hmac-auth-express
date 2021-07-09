@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 
-import { HmacOptions } from './index';
+import { Options } from './index';
 
-export default function(secret: string, options: HmacOptions): TypeError | void {
+export default function(secret: string, options: Options): TypeError | void {
     if (!secret || typeof secret !== 'string') {
         return new TypeError(`Invalid value provided for property secret. Expected non-empty string but got '${secret}' (type: ${typeof secret})`);
     }

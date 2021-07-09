@@ -3,7 +3,9 @@
   "version": "7.0.0",
   "description": "",
   "main": "dist/src/index.js",
+  "typings": "dist/src",
   "scripts": {
+    "build": "tsc",
     "test": "tsc && jest dist/tests",
     "benchmark": "tsc && node benchmark",
     "release": "standard-version"
