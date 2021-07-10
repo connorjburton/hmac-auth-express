@@ -5,9 +5,11 @@
   "main": "dist/src/index.js",
   "typings": "dist/src",
   "scripts": {
-    "build": "tsc",
-    "test": "tsc && jest dist/tests",
-    "benchmark": "tsc && node benchmark",
+    "pretest": "tsc",
+    "prebenchmark": "tsc",
+    "prepare": "tsc",
+    "test": "jest dist/tests",
+    "benchmark": "node dist/benchmark",
     "release": "standard-version"
   },
   "repository": {

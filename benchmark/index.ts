@@ -36,7 +36,8 @@ function transformObserverEntry(entry: PerformanceEntry): TransformedEntry {
 
     performance.mark(`iterations`);
     for (let i = 0; i < COUNT; i++) {
-        middleware(REQUEST as Request, {} as Response, jest.fn());
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        middleware(REQUEST as Request, {} as Response, () => {});
     }
     performance.mark(`endIterations`);
     performance.measure('Total', 'iterations', 'endIterations');
