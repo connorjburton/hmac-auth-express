@@ -37,13 +37,13 @@ See [FAQ's](#faqs) for design decisions around exports.
 #### Basic middleware registration
 
 ```javascript
-app.use('/api', hmac('secret'));
+app.use('/api', HMAC('secret'));
 ```
 
 #### Advanced middleware registration
 
 ```javascript
-app.use('/api', hmac('secret', {
+app.use('/api', HMAC('secret', {
   algorithm: 'sha512',
   identifier: 'APP',
   header: 'authorization',
@@ -177,14 +177,14 @@ You can run your own benchmarks by checking out the package and running `yarn be
 import { HMAC as hmac } from 'hmac-auth-express';
 ```
 
-*Why is there no default export?* It seems to be non-trivial to export a default that has consistent behaviour between CommonJS & ECMASCript, for an example below for the behavioural differences when exporting a default from Typescript.
+*Why is there no default export?* It seems to be non-trivial to export a default that has consistent behaviour between CommonJS & ECMASCript, the example below shows the behavioural differences when exporting a default from Typescript.
 
 ```javascript
 const HMAC = require('hmac-auth-express').default;
 import HMAC from 'hmac-auth-exppress';
 ```
 
-If you have a suggestion on how to export a default consistently then please (open an issue)[https://github.com/connorjburton/hmac-auth-express/issues/new].
+If you have a suggestion on how to export a default consistently then please [open an issue](https://github.com/connorjburton/hmac-auth-express/issues/new).
 
 ## Credits
 
