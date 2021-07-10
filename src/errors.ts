@@ -1,4 +1,4 @@
-class HMACAuthError extends Error {
+class AuthError extends Error {
     code: string;
     status: number;
     statusCode: number;
@@ -17,4 +17,4 @@ class HMACAuthError extends Error {
     }
 }
 
-export { HMACAuthError };
+export default AuthError;

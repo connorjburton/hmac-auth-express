@@ -3,7 +3,7 @@ import { Request, RequestHandler, NextFunction } from 'express';
 
 import stringToBuffer from './stringToBuffer';
 import validateArguments from './validateArguments';
-import { HMACAuthError } from './errors';
+import AuthError from './errors';
 
 export type Options = {
     algorithm: string;
@@ -21,6 +21,8 @@ const defaults: Options = {
     minInterval: 0 
 }
 
+export { AuthError };
+
 export function HMAC(secret: string, options: Partial<Options> = {}): RequestHandler {
     const mergedOpts: Options = { ...defaults, ...options };
 
@@ -31,33 +33,33 @@ export function HMAC(secret: string, options: Partial<Options> = {}): RequestHan
 
     return function(request: Request, _, next: NextFunction): void {
         if (!(mergedOpts.header in request.headers)) {
-            return next(new HMACAuthError(`Header provided not in sent headers. Expected ${mergedOpts.header} but not found in request.headers`));
+            return next(new AuthError(`Header provided not in sent headers. Expected ${mergedOpts.header} but not found in request.headers`));
         }
 
         // see https://github.com/microsoft/TypeScript/issues/41612
         // for why we can't do request.headers[options.header] in the conditional
         const header: string | string[] | undefined = request.headers[mergedOpts.header];
         if (typeof header !== 'string' || typeof mergedOpts.identifier !== 'string' || !header.startsWith(mergedOpts.identifier)) {
-            return next(new HMACAuthError(`Header did not start with correct identifier. Expected ${mergedOpts.identifier} but not found in options.header`));
+            return next(new AuthError(`Header did not start with correct identifier. Expected ${mergedOpts.identifier} but not found in options.header`));
         }
 
         const unixRegex = /(\d{1,13}):/;
         const unixMatch: RegExpExecArray | null = unixRegex.exec(header);
         if (!Array.isArray(unixMatch) || unixMatch.length !== 2 || typeof unixMatch[1] !== 'string') {
-            return next(new HMACAuthError('Unix timestamp was not present in header'));
+            return next(new AuthError('Unix timestamp was not present in header'));
         }
 
         // is the unix timestamp difference to current timestamp larger than maxInterval or smaller than minInterval
         const timeDiff: number = Math.floor(Date.now() / 1000) - Math.floor(parseInt(unixMatch[1], 10) / 1000);
         if (timeDiff > mergedOpts.maxInterval || (timeDiff * -1) > mergedOpts.minInterval) {
-            return next(new HMACAuthError('Time difference between generated and requested time is too great'));
+            return next(new AuthError('Time difference between generated and requested time is too great'));
         }
 
         // check HMAC digest exists in header
         const hashRegex = /:(.{1,}$)/;
         const hashMatch: RegExpExecArray | null = hashRegex.exec(header);
         if (!Array.isArray(hashMatch) || hashMatch.length !== 2 || typeof hashMatch[1] !== 'string') {
-            return next(new HMACAuthError('HMAC digest was not present in header'));
+            return next(new AuthError('HMAC digest was not present in header'));
         }
 
         const hmac: crypto.Hmac = crypto.createHmac(mergedOpts.algorithm, secret);
@@ -78,7 +80,7 @@ export function HMAC(secret: string, options: Partial<Options> = {}): RequestHan
 
         // use timing safe check to prevent timing attacks
         if (hmacDigest.length !== sourceDigest.length || !crypto.timingSafeEqual(hmacDigest, sourceDigest)) {
-            return next(new HMACAuthError('HMAC\'s did not match'));
+            return next(new AuthError('HMAC\'s did not match'));
         }
 
         return next();

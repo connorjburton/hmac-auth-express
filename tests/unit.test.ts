@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Request, Response } from 'express';
 
-import { HMAC } from './../src/index.js';
-import { HMACAuthError } from './../src/errors.js';
+import { HMAC, AuthError } from './../src/index.js';
 
 type MockRequest = {
     headers: {
@@ -105,7 +105,7 @@ describe('unit', () => {
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('HMAC\'s did not match');
 
         global.Date.now = originalDateNow;
@@ -117,7 +117,7 @@ describe('unit', () => {
         middleware(mockedRequest({ headers: {} }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Header provided not in sent headers. Expected authentication but not found in request.headers');
     });
 
@@ -127,7 +127,7 @@ describe('unit', () => {
         middleware(mockedRequest({ headers: {} }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Header provided not in sent headers. Expected myhmac but not found in request.headers');
     });
 
@@ -137,7 +137,7 @@ describe('unit', () => {
         middleware(mockedRequest({ headers: { authentication: 'FOO' } }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Header did not start with correct identifier. Expected HMAC but not found in options.header');
     });
 
@@ -147,7 +147,7 @@ describe('unit', () => {
         middleware(mockedRequest({ headers: { authentication: 'FOO' } }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Header did not start with correct identifier. Expected BAR but not found in options.header');
     });
 
@@ -157,7 +157,7 @@ describe('unit', () => {
         middleware(mockedRequest({ headers: { authentication: 'HMAC :a2bc3' } }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Unix timestamp was not present in header');
     });
 
@@ -170,7 +170,7 @@ describe('unit', () => {
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Time difference between generated and requested time is too great');
 
         global.Date.now = originalDateNow;
@@ -186,7 +186,7 @@ describe('unit', () => {
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Time difference between generated and requested time is too great');
 
         global.Date.now = originalDateNow;
@@ -215,7 +215,7 @@ describe('unit', () => {
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Time difference between generated and requested time is too great');
 
         global.Date.now = originalDateNow;
@@ -243,7 +243,7 @@ describe('unit', () => {
         middleware(mockedRequest({ headers: { authentication: 'HMAC 1573504737300:' }}) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
-        expect(calledArg).toBeInstanceOf(HMACAuthError);
+        expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('HMAC digest was not present in header');
 
         global.Date.now = originalDateNow;

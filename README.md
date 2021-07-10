@@ -18,24 +18,37 @@ This package provides [Express](https://expressjs.com/) middleware for HMAC auth
 
 ## Usage
 
+#### Importing the package
+
+Supports both CommonJS & ECMAScript modules.
+
+*CommonJS*
+```javascript
+const { HMAC } = require('hmac-auth-express');
+```
+
+*ECMASCript*
+```javascript
+import { HMAC } from 'hmac-auth-express';
+```
+
+See [FAQ's](#faqs) for design decisions around exports.
+
 #### Basic middleware registration
 
 ```javascript
-const hmac = require('hmac-auth-express');
-
 app.use('/api', hmac('secret'));
 ```
 
 #### Advanced middleware registration
 
 ```javascript
-const hmac = require('hmac-auth-express');
-
 app.use('/api', hmac('secret', {
   algorithm: 'sha512',
   identifier: 'APP',
   header: 'authorization',
-  maxInterval: 600
+  maxInterval: 600,
+  minInterval: 600
 });
 ```
 
@@ -54,17 +67,17 @@ The function will throw `TypeError`'s if you provide incorrect parameters.
 
 #### Error Handling
 
-The middleware will pass an error to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers). You can use the provided `HMACAuthError`, or alternatively check the error by its code `ERR_HMAC_AUTH_INVALID`.
+The middleware will pass an error to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers). You can use the provided `AuthError`, or alternatively check the error by its code `ERR_HMAC_AUTH_INVALID`.
 
 Example:
 
 ```javascript
-const { HMACAuthError } = require('hmac-auth-express/src/errors');
+const { AuthError } = require('hmac-auth-express');
 
 // express' error handler
 app.use((error, req, res, next) => {
   // check by error instance
-  if (error instanceof HMACAuthError) {
+  if (error instanceof AuthError) {
     res.status(401).json({
       error: 'Invalid request',
       info: error.message
@@ -155,6 +168,23 @@ You can run your own benchmarks by checking out the package and running `yarn be
 | Environment  | Operations  | Duration  | ops/second  |
 |---|---|---|---|
 | `Windows 10 Pro, i5-7600K@3.80GHz`  | 1,000,000  | 24,793ms  | 40,334  |
+
+## FAQs
+
+*Why is HMAC uppercase?* HMAC is an acronym for hash-based message authentication code. You can import the package as below if you need to conform to style conventions.
+
+```javascript
+import { HMAC as hmac } from 'hmac-auth-express';
+```
+
+*Why is there no default export?* It seems to be non-trivial to export a default that has consistent behaviour between CommonJS & ECMASCript, for an example below for the behavioural differences when exporting a default from Typescript.
+
+```javascript
+const HMAC = require('hmac-auth-express').default;
+import HMAC from 'hmac-auth-exppress';
+```
+
+If you have a suggestion on how to export a default consistently then please (open an issue)[https://github.com/connorjburton/hmac-auth-express/issues/new].
 
 ## Credits
 
