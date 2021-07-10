@@ -31,7 +31,7 @@ export function HMAC(secret: string, options: Partial<Options> = {}): RequestHan
 
     return function(request: Request, _, next: NextFunction): void {
         if (!(mergedOpts.header in request.headers)) {
-            return next(new HMACAuthError(`Header provided not in sent headers. Expected ${options.header} but not found in request.headers`));
+            return next(new HMACAuthError(`Header provided not in sent headers. Expected ${mergedOpts.header} but not found in request.headers`));
         }
 
         // see https://github.com/microsoft/TypeScript/issues/41612
@@ -69,7 +69,7 @@ export function HMAC(secret: string, options: Partial<Options> = {}): RequestHan
         // if we have a request body, create a md5 hash of it and add it to the hmac
         if (typeof request.body === 'object' && request.body !== null && ((!Array.isArray(request.body) && Object.keys(request.body).length > 0) || request.body.length > 0)) {
             const hash = crypto.createHash('md5');
-            hash.update(request.body); // we add it as a json string
+            hash.update(JSON.stringify(request.body)); // we add it as a json string
             hmac.update(hash.digest('hex'));
         }
 
