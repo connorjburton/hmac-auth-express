@@ -46,7 +46,7 @@ app.use('/api', HMAC('secret'));
 app.use('/api', HMAC('secret', {
   algorithm: 'sha512',
   identifier: 'APP',
-  header: 'authorization',
+  header: 'myheader',
   maxInterval: 600,
   minInterval: 600
 });
@@ -61,7 +61,7 @@ The function will throw `TypeError`'s if you provide incorrect parameters.
 | `secret`  | *string*  | `undefined`  | Your hash secret  |
 | `options.algorithm`  | *string*  | `sha256`  | Your hashing algorithim  |
 | `options.identifier`  | *string*  | `HMAC`  | The start of your `options.header` should start with this  |
-| `options.header`  | *string*  | `authentication`  | The header the HMAC is located, should always be lowercase (express lowercases headers)  |
+| `options.header`  | *string*  | `authorization`  | The header the HMAC is located  |
 | `options.maxInterval`  | *integer*  | `60 * 5`  | The amount of time you would like a request to be valid for, in seconds (in the past). See [time based protection against replay attacks](#replay-attacks) for more information  |
 | `options.minInterval`  | *integer*  | `0`  | The amount of time you would like a request to be valid for, in seconds (in the future). See [time based protection against replay attacks](#replay-attacks) for more information  |
 
@@ -106,11 +106,11 @@ Now you have configured your HMAC middleware, you need to structure your HMAC in
 
 This example uses the default `options.header` and `options.identifier`. These will be different if you override said defaults
 
-`Authentication: HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86`
+`Authorization: HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86`
 
 #### Constructing the HMAC
 
-`Authentication:` This is the header you send in the request that contains the HMAC. This is what the middleware will look for.
+`Authorization:` This is the header you send in the request that contains the HMAC. This is what the middleware will look for.
 
 `HMAC` This is the identifier the middleware will look for, this is fine to be left as the default
 
@@ -126,7 +126,7 @@ Below is an example request and how we would build that request's HMAC
 
 ```
 POST http://www.domain.com/api/order HTTP/1.0
-Authentication: HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
+Authorization: HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
 Content-Type: application/json
 Date: Wed, 13 Nov 2019 22:06:01 GMT
 

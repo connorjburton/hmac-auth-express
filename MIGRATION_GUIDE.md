@@ -2,6 +2,10 @@
 
 ## Migrating to 8.0.0 [#53](https://github.com/connorjburton/hmac-auth-express/pull/53)
 
+### Default header
+
+The default header has changed from `authenticaton` to `authorization` to be more in line with the [ITEF spec](https://datatracker.ietf.org/doc/html/rfc2617#section-3.2.1) and the [AWS HMAC implementation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/RESTAuthentication.html).
+
 ### Import
 
 `hmac-auth-express` now exclusively uses named exports.
