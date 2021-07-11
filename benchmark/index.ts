@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { request, Request, Response } from 'express';
 import { PerformanceObserver, PerformanceEntry, PerformanceObserverEntryList, performance } from 'perf_hooks';
 
 import { HMAC } from './../src/index.js';
@@ -10,16 +10,15 @@ interface TransformedEntry {
 }
 
 const COUNT = 1000000;
-const REQUEST: Partial<Request> = {
-    headers: {
-        authentication: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
-    },
-    method: 'POST',
-    originalUrl: '/api/order',
-    body: {
-        foo: 'bar'
-    },
-}
+const REQUEST = request;
+REQUEST.headers = {
+    authentication: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
+};
+REQUEST.method = 'POST';
+REQUEST.originalUrl = '/api/order';
+REQUEST.body = {
+    foo: 'bar'
+};
 
 function transformObserverEntry(entry: PerformanceEntry): TransformedEntry {
     return {

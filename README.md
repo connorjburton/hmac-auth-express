@@ -59,7 +59,7 @@ The function will throw `TypeError`'s if you provide incorrect parameters.
 | Parameter  | Accepted Type  | Default  | Description  |
 |---|---|---|---|
 | `secret`  | *string*  | `undefined`  | Your hash secret  |
-| `options.algorithm`  | *string*  | `sha256`  | Your hashing algorithim  |
+| `options.algorithm`  | *string*  | `sha256`  | Your hashing algorithm  |
 | `options.identifier`  | *string*  | `HMAC`  | The start of your `options.header` should start with this  |
 | `options.header`  | *string*  | `authorization`  | The header the HMAC is located  |
 | `options.maxInterval`  | *integer*  | `60 * 5`  | The amount of time you would like a request to be valid for, in seconds (in the past). See [time based protection against replay attacks](#replay-attacks) for more information  |

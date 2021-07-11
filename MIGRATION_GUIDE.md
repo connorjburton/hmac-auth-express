@@ -61,7 +61,7 @@ Previously, the documentation incorrectly stated the header and HMAC digest expe
 
 ## Migrating from 2.x.x to 3.0.0 [#1](https://github.com/connorjburton/hmac-auth-express/issues/1)
 
-In case of an error (e.g. the hmac verification failed), the middleware will no longer send a response by itself. Instead an error will be passed to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers).
+In case of an error (e.g. the HMAC verification failed), the middleware will no longer send a response by itself. Instead an error will be passed to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers).
 
 - `options.error` is removed and will be ignored.
 
