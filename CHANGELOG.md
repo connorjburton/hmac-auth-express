@@ -5,23 +5,16 @@ All notable changes to this project will be documented in this file. See [standa
 ## [8.0.0](https://github.com/connorjburton/hmac-auth-express/compare/v7.0.0...v8.0.0) (2021-07-11)
 
 
-### ⚠ BREAKING CHANGES
+### [⚠ BREAKING CHANGES](https://github.com/connorjburton/hmac-auth-express/blob/master/MIGRATION_GUIDE.md)
 
 * changed default header to authorization
+* package now exclusively uses named exports
+* error is now exported as `AuthError` rather than `HMACAuthError`
+* importing `AuthError` is now done directly on `hmac-auth-express` rather than `hmac-auth-express/src/errors`
 
 ### Bug Fixes
 
-* adding pre scripts for all cmds that need typescript & fixing benchmark tool ([16f8837](https://github.com/connorjburton/hmac-auth-express/commit/16f8837568bd0205b3d7769200d9367ded95f0d8))
-* all tests are now typescript ([9468c0e](https://github.com/connorjburton/hmac-auth-express/commit/9468c0eacf84d168764b84bdf43940cefc737b2a))
-* changed default header to authorization ([46e1f62](https://github.com/connorjburton/hmac-auth-express/commit/46e1f62d216323bcd9e7fb7248ffeda4304262b7))
-* first pass at refactoring to typescript ([3469aaf](https://github.com/connorjburton/hmac-auth-express/commit/3469aaf49b653d359adfbd05b844a01d56d7da84))
-* fixing tests from ts refactor ([2905531](https://github.com/connorjburton/hmac-auth-express/commit/2905531a7033f085fc6fce06050c92dc6db185b6))
-* grammar fixes to readme ([f5d4f37](https://github.com/connorjburton/hmac-auth-express/commit/f5d4f37604375a13c3cecc5f4698a90d6ee4ec41))
-* now correctly generates js module with named exports ([0b1a887](https://github.com/connorjburton/hmac-auth-express/commit/0b1a887fb7e8c23821ab713b40453728ec67f72c))
 * now supports empty objects and arrays as request bodies ([640bcbe](https://github.com/connorjburton/hmac-auth-express/commit/640bcbe323897b1100961c226078385f83a3121e))
-* removing ts-jest, try/catch in test and added correct return type to stringToBuffer ([a356d09](https://github.com/connorjburton/hmac-auth-express/commit/a356d098b23c33a4e3dc518f0e53c0f35d4fb7a7))
-* unit tests now use real express request object to mock requests ([44a5beb](https://github.com/connorjburton/hmac-auth-express/commit/44a5beb411bf9cc0e5c256abe1cb85b9515deeca))
-* updating readme and migration guide ([de220b0](https://github.com/connorjburton/hmac-auth-express/commit/de220b082ff159877281bd05cd221cf0c605511c))
 
 ## [7.0.0](https://github.com/connorjburton/hmac-auth-express/compare/v6.0.1...v7.0.0) (2021-07-04)
 

@@ -4,7 +4,7 @@
 
 ### Default header
 
-The default header has changed from `authenticaton` to `authorization` to be more in line with the [ITEF spec](https://datatracker.ietf.org/doc/html/rfc2617#section-3.2.1) and the [AWS HMAC implementation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/RESTAuthentication.html).
+The default header has changed from `authenticaton` to `authorization` to be more in line with the [ITEF spec](https://datatracker.ietf.org/doc/html/rfc2617#section-3.2.1) and the [AWS HMAC implementation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/RESTAuthentication.html). If you would like to still use `authentication` then use the `header` option as described in [README.md](https://github.com/connorjburton/hmac-auth-express/blob/master/README.md).
 
 ### Import
 
