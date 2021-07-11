@@ -54,7 +54,7 @@ describe('e2e', () => {
             json: body,
             hooks: {
                 beforeRequest: [(options: NormalizedOptions) => {
-                    options.headers['authentication'] = `HMAC ${time.toString()}:${generate(options.json, time, options.method, options.url.pathname)}`
+                    options.headers['authorization'] = `HMAC ${time.toString()}:${generate(options.json, time, options.method, options.url.pathname)}`
                 }]
             }
         });

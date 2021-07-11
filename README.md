@@ -177,7 +177,7 @@ You can run your own benchmarks by checking out the package and running `yarn be
 import { HMAC as hmac } from 'hmac-auth-express';
 ```
 
-*Why is there no default export?* It seems to be non-trivial to export a default that has consistent behaviour between CommonJS & ECMASCript, the example below shows the behavioural differences when exporting a default from Typescript.
+*Why is there no default export?* It seems to be non-trivial to export a default that has consistent behaviour between CommonJS & ECMASCript, the example below shows the behavioural differences when exporting a default from TypeScript.
 
 ```javascript
 const HMAC = require('hmac-auth-express').default;

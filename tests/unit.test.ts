@@ -4,8 +4,8 @@ import { Request, Response } from 'express';
 import { HMAC, AuthError } from './../src/index.js';
 
 type MockRequest = {
-    headers: {
-        authentication?: string
+    headers?: {
+        authorization?: string
     }
     method?: 'GET' | 'POST',
     originalUrl?: string,
@@ -19,7 +19,7 @@ type Spies = {
 function mockedRequest(override?: MockRequest): Partial<Request> {
     return {
         headers: {
-            authentication: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
+            authorization: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
         },
         method: 'POST',
         originalUrl: '/api/order',
@@ -58,7 +58,7 @@ describe('unit', () => {
         
         const middleware = HMAC('secret');
 
-        middleware(mockedRequest({ headers: { authentication: 'HMAC 1573504737300:4f1c59c68f09af0790b4531118438ae179689eebc5bb30a8359719e319f70b85' }, body: [1, 2, 3] }) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({ headers: { authorization: 'HMAC 1573504737300:4f1c59c68f09af0790b4531118438ae179689eebc5bb30a8359719e319f70b85' }, body: [1, 2, 3] }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenLastCalledWith();
 
@@ -71,7 +71,7 @@ describe('unit', () => {
         
         const middleware = HMAC('secret', { algorithm: 'ripemd160' });
 
-        middleware(mockedRequest({ headers: { authentication: 'HMAC 1573504737300:b55d3ad0b64e106655871bbe7e0d1f55a1f81f7b' }}) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({ headers: { authorization: 'HMAC 1573504737300:b55d3ad0b64e106655871bbe7e0d1f55a1f81f7b' }}) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenLastCalledWith();
 
@@ -86,7 +86,7 @@ describe('unit', () => {
 
         middleware(mockedRequest({
             headers: {
-                authentication: 'HMAC 1573504737300:39f9c6b0ea547d46ac03d4e7b0acd1194c2a06f1037620ba7986f8eb017c98ba'
+                authorization: 'HMAC 1573504737300:39f9c6b0ea547d46ac03d4e7b0acd1194c2a06f1037620ba7986f8eb017c98ba'
             },
             body: undefined
         }) as Request, {} as Response, spies.next);
@@ -118,7 +118,7 @@ describe('unit', () => {
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe('Header provided not in sent headers. Expected authentication but not found in request.headers');
+        expect(calledArg.message).toBe('Header provided not in sent headers. Expected authorization but not found in request.headers');
     });
 
     test('fails hmac on no header with custom header', () => {
@@ -134,7 +134,7 @@ describe('unit', () => {
     test('fails hmac on incorrect identifier', () => {
         const middleware = HMAC('secret');
 
-        middleware(mockedRequest({ headers: { authentication: 'FOO' } }) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({ headers: { authorization: 'FOO' } }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -144,7 +144,7 @@ describe('unit', () => {
     test('fails hmac on incorrect identifier with custom identifier', () => {
         const middleware = HMAC('secret', { identifier: 'BAR' });
 
-        middleware(mockedRequest({ headers: { authentication: 'FOO' } }) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({ headers: { authorization: 'FOO' } }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -154,7 +154,7 @@ describe('unit', () => {
     test('fails if unix timestamp not found', () => {        
         const middleware = HMAC('secret');
 
-        middleware(mockedRequest({ headers: { authentication: 'HMAC :a2bc3' } }) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({ headers: { authorization: 'HMAC :a2bc3' } }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -240,7 +240,7 @@ describe('unit', () => {
 
         const middleware = HMAC('secret');
 
-        middleware(mockedRequest({ headers: { authentication: 'HMAC 1573504737300:' }}) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({ headers: { authorization: 'HMAC 1573504737300:' }}) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -258,7 +258,7 @@ describe('unit', () => {
     });
 
     test('passing incorrect algorithm throws an error', () => {
-        expect(() => HMAC('secret', { algorithm: 'sha111' })).toThrowError(new TypeError(`Invalid value provided for property options.algorithm. Expected value from crypto.getHashes() but got sha111`));
+        expect(() => HMAC('secret', { algorithm: 'sha111' })).toThrowError(new TypeError(`Invalid value provided for property options.algorithm. Expected value from crypto.getHashes() but got sha111 (type: string)`));
     });
 
     test('passing incorrect identifier throws an error', () => {
