@@ -64,7 +64,7 @@ export function HMAC(secret: string, options: Partial<Options> = {}): RequestHan
         hmac.update(request.originalUrl); // add url e.g /api/order
 
         // if we have a request body, create a md5 hash of it and add it to the hmac
-        if (typeof request.body === 'object' && request.body !== null && ((!Array.isArray(request.body) && Object.keys(request.body).length > 0) || request.body.length > 0)) {
+        if (typeof request.body === 'object' && request.body !== null) {
             const hash = crypto.createHash('md5');
             hash.update(JSON.stringify(request.body)); // we add it as a json string
             hmac.update(hash.digest('hex'));

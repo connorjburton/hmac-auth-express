@@ -21,7 +21,8 @@ function mockedRequest(override: MockRequest = {}): Partial<Request> {
     req.headers = override.headers ?? { authorization: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86' };
     req.method = override.method ?? 'POST';
     req.originalUrl = override.originalUrl ?? '/api/order';
-    req.body = override.body ?? { foo: 'bar' };
+    // We want to override body with undefined if we pass it in
+    req.body = Object.prototype.hasOwnProperty.call(override, 'body') ? override.body : { foo: 'bar' };
 
     return req;
 }
@@ -32,7 +33,7 @@ describe('unit', () => {
     };
 
     afterEach(() => {
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
     });
 
     test('passes hmac', () => {
@@ -251,7 +252,12 @@ describe('unit', () => {
         
         const middleware = HMAC('secret');
 
-        middleware(mockedRequest({ body: {} }) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({
+            headers: {
+                authorization: 'HMAC 1573504737300:1af576ff2225e3955a2be42078e20f59d6c5d022aa21c3c83eb3896c39762df3'
+            },
+            body: {}
+        }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
@@ -264,7 +270,12 @@ describe('unit', () => {
         
         const middleware = HMAC('secret');
 
-        middleware(mockedRequest({ body: { foo: 'bar' } }) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({
+            headers: {
+                authorization: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
+            },
+            body: { foo: 'bar' }
+        }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
@@ -277,7 +288,12 @@ describe('unit', () => {
         
         const middleware = HMAC('secret');
 
-        middleware(mockedRequest({ body: { foo: 'bar', baz: { fizz: 1, buzz: [1, 2] } } }) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({
+            headers: {
+                authorization: 'HMAC 1573504737300:8ecf6a09404214f187e6746e37bdb0be995abb59001cd0b803133de240a0e395'
+            },
+            body: { foo: 'bar', baz: { fizz: 1, buzz: [1, 2] } }
+        }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
@@ -290,7 +306,12 @@ describe('unit', () => {
         
         const middleware = HMAC('secret');
 
-        middleware(mockedRequest({ body: [] }) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({
+            headers: {
+                authorization: 'HMAC 1573504737300:099eb78ea6aa95d13f79cfb64023156f2f7cb00cdb63375169ea6a06b38796b4'
+            },
+            body: []
+        }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
@@ -303,7 +324,12 @@ describe('unit', () => {
         
         const middleware = HMAC('secret');
 
-        middleware(mockedRequest({ body: [1, 'test', {}, ['a', {}]] }) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({
+            headers: {
+                authorization: 'HMAC 1573504737300:1a660f056f582b9154a745e7a04937d37e3980302de617f9bdcadf820902e5a6'
+            },
+            body: [1, 'test', {}, ['a', {}]]
+        }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
