@@ -1,23 +1,24 @@
-import hmac from './../src/index.js';
+import { request, Request, Response } from 'express';
 import { PerformanceObserver, PerformanceEntry, PerformanceObserverEntryList, performance } from 'perf_hooks';
 
-type TransformedEntry = {
+import { HMAC } from './../src/index.js';
+
+interface TransformedEntry {
     operations: number,
     duration: number,
     throughput: string
 }
 
-const COUNT: number = 1000000;
-const REQUEST: object = {
-    headers: {
-        authentication: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
-    },
-    method: 'POST',
-    originalUrl: '/api/order',
-    body: {
-        foo: 'bar'
-    },
-}
+const COUNT = 1000000;
+const REQUEST = request;
+REQUEST.headers = {
+    authentication: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
+};
+REQUEST.method = 'POST';
+REQUEST.originalUrl = '/api/order';
+REQUEST.body = {
+    foo: 'bar'
+};
 
 function transformObserverEntry(entry: PerformanceEntry): TransformedEntry {
     return {
@@ -29,12 +30,13 @@ function transformObserverEntry(entry: PerformanceEntry): TransformedEntry {
 
 (function run(): void {
     const observer: PerformanceObserver = new PerformanceObserver((items: PerformanceObserverEntryList): void => console.log(items.getEntries().map((entry) => transformObserverEntry(entry))));
-    const middleware = hmac('secret');
+    const middleware = HMAC('secret');
     observer.observe({ type: 'measure' });
 
     performance.mark(`iterations`);
     for (let i = 0; i < COUNT; i++) {
-        middleware(REQUEST, undefined, () => {});
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        middleware(REQUEST as Request, {} as Response, () => {});
     }
     performance.mark(`endIterations`);
     performance.measure('Total', 'iterations', 'endIterations');

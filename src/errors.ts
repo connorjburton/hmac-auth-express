@@ -1,5 +1,10 @@
-module.exports.HMACAuthError = class HMACAuthError extends Error {
-    constructor(message) {
+class AuthError extends Error {
+    code: string;
+    status: number;
+    statusCode: number;
+    status_code: number;
+
+    constructor(message: string) {
         super(message);
         this.name = this.constructor.name;
         this.code = 'ERR_HMAC_AUTH_INVALID';
@@ -11,3 +16,5 @@ module.exports.HMACAuthError = class HMACAuthError extends Error {
         this.status_code = 401;
     }
 }
+
+export default AuthError;

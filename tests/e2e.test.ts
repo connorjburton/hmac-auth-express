@@ -1,13 +1,13 @@
 import { Server } from 'http';
 import crypto from 'crypto';
 import express from 'express';
-import got, { Method, Response } from 'got';
-import hmac from '../src/index.js';
+import got, { Method, Response, NormalizedOptions } from 'got';
+import { HMAC } from './../src/index';
 
-const PORT: number = 3000;
-const SECRET: string = 'secret';
+const PORT = 3000;
+const SECRET = 'secret';
 
-const generate = (body: Record<string, any> | undefined, time: number, method: Method, path: string | undefined): string => {
+const generate = (body: Record<string, unknown> | undefined, time: number, method: Method, path: string | undefined): string => {
     const hmac: crypto.Hmac = crypto.createHmac('sha256', SECRET);
 
     hmac.update(time.toString());
@@ -33,9 +33,8 @@ describe('e2e', () => {
     beforeAll((done: jest.DoneCallback) => {
         app = express();
         app.use(express.json());
-        app.use(hmac(SECRET));
-        app.use((err: { stack: object }, _req: express.Request, res: express.Response, next: Function): void => {
-            console.error(err.stack);
+        app.use(HMAC(SECRET));
+        app.use((_: Record<string, unknown>, _req: express.Request, res: express.Response, next: express.NextFunction): void => {
             res.sendStatus(401);
             next();
         })
@@ -50,12 +49,12 @@ describe('e2e', () => {
 
     test('passes hmac', async () => {
         const time: number = Date.now();
-        const body: object = { foo: 'bar' };
+        const body = { foo: 'bar' };
         const response: Response = await got.post(`http://localhost:${PORT}/test`, {
             json: body,
             hooks: {
-                beforeRequest: [(options) => {
-                    options.headers['authentication'] = `HMAC ${time.toString()}:${generate(options.json, time, options.method, options.url.pathname)}`
+                beforeRequest: [(options: NormalizedOptions) => {
+                    options.headers['authorization'] = `HMAC ${time.toString()}:${generate(options.json, time, options.method, options.url.pathname)}`
                 }]
             }
         });

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.0](https://github.com/connorjburton/hmac-auth-express/compare/v7.0.0...v8.0.0) (2021-07-11)
+
+
+### [⚠ BREAKING CHANGES](https://github.com/connorjburton/hmac-auth-express/blob/master/MIGRATION_GUIDE.md)
+
+* changed default header to authorization
+* package now exclusively uses named exports
+* error is now exported as `AuthError` rather than `HMACAuthError`
+* importing `AuthError` is now done directly on `hmac-auth-express` rather than `hmac-auth-express/src/errors`
+
+### Bug Fixes
+
+* now supports empty objects and arrays as request bodies ([640bcbe](https://github.com/connorjburton/hmac-auth-express/commit/640bcbe323897b1100961c226078385f83a3121e))
+
 ## [7.0.0](https://github.com/connorjburton/hmac-auth-express/compare/v6.0.1...v7.0.0) (2021-07-04)
 
 
