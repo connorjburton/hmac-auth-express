@@ -1,33 +1,29 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Request, Response } from 'express';
+import { request, Request, Response } from 'express';
 
 import { HMAC, AuthError } from './../src/index.js';
 
-type MockRequest = {
+interface MockRequest {
     headers?: {
         authorization?: string
     }
     method?: 'GET' | 'POST',
     originalUrl?: string,
-    body?: Record<string, unknown> | number[],
+    body?: Record<string, unknown> | unknown[]
 }
 
-type Spies = {
+interface Spies {
     next: jest.Mock
 }
 
-function mockedRequest(override?: MockRequest): Partial<Request> {
-    return {
-        headers: {
-            authorization: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
-        },
-        method: 'POST',
-        originalUrl: '/api/order',
-        body: {
-            foo: 'bar'
-        },
-        ...override || {},
-    };
+function mockedRequest(override: MockRequest = {}): Partial<Request> {
+    const req = request;
+    req.headers = override.headers ?? { authorization: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86' };
+    req.method = override.method ?? 'POST';
+    req.originalUrl = override.originalUrl ?? '/api/order';
+    req.body = override.body ?? { foo: 'bar' };
+
+    return req;
 }
 
 describe('unit', () => {
@@ -47,7 +43,7 @@ describe('unit', () => {
 
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-        expect(spies.next).toHaveBeenLastCalledWith();
+        expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
@@ -60,7 +56,7 @@ describe('unit', () => {
 
         middleware(mockedRequest({ headers: { authorization: 'HMAC 1573504737300:4f1c59c68f09af0790b4531118438ae179689eebc5bb30a8359719e319f70b85' }, body: [1, 2, 3] }) as Request, {} as Response, spies.next);
 
-        expect(spies.next).toHaveBeenLastCalledWith();
+        expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
@@ -73,7 +69,7 @@ describe('unit', () => {
 
         middleware(mockedRequest({ headers: { authorization: 'HMAC 1573504737300:b55d3ad0b64e106655871bbe7e0d1f55a1f81f7b' }}) as Request, {} as Response, spies.next);
 
-        expect(spies.next).toHaveBeenLastCalledWith();
+        expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
@@ -91,7 +87,7 @@ describe('unit', () => {
             body: undefined
         }) as Request, {} as Response, spies.next);
 
-        expect(spies.next).toHaveBeenLastCalledWith();
+        expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
@@ -201,7 +197,7 @@ describe('unit', () => {
 
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-        expect(spies.next).toHaveBeenLastCalledWith();
+        expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
@@ -229,7 +225,7 @@ describe('unit', () => {
 
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-        expect(spies.next).toHaveBeenLastCalledWith();
+        expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
@@ -245,6 +241,71 @@ describe('unit', () => {
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('HMAC digest was not present in header');
+
+        global.Date.now = originalDateNow;
+    });
+
+    test('passes hmac with empty object as body', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504737300;
+        
+        const middleware = HMAC('secret');
+
+        middleware(mockedRequest({ body: {} }) as Request, {} as Response, spies.next);
+
+        expect(spies.next).toHaveBeenCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
+    test('passes hmac with basic object as body', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504737300;
+        
+        const middleware = HMAC('secret');
+
+        middleware(mockedRequest({ body: { foo: 'bar' } }) as Request, {} as Response, spies.next);
+
+        expect(spies.next).toHaveBeenCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
+    test('passes hmac with complex object as body', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504737300;
+        
+        const middleware = HMAC('secret');
+
+        middleware(mockedRequest({ body: { foo: 'bar', baz: { fizz: 1, buzz: [1, 2] } } }) as Request, {} as Response, spies.next);
+
+        expect(spies.next).toHaveBeenCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
+    test('passes hmac with empty array as body', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504737300;
+        
+        const middleware = HMAC('secret');
+
+        middleware(mockedRequest({ body: [] }) as Request, {} as Response, spies.next);
+
+        expect(spies.next).toHaveBeenCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
+    test('passes hmac with array as body', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => 1573504737300;
+        
+        const middleware = HMAC('secret');
+
+        middleware(mockedRequest({ body: [1, 'test', {}, ['a', {}]] }) as Request, {} as Response, spies.next);
+
+        expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });

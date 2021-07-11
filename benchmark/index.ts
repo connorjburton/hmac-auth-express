@@ -3,7 +3,7 @@ import { PerformanceObserver, PerformanceEntry, PerformanceObserverEntryList, pe
 
 import { HMAC } from './../src/index.js';
 
-type TransformedEntry = {
+interface TransformedEntry {
     operations: number,
     duration: number,
     throughput: string
