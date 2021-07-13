@@ -7,11 +7,11 @@
 
 This package provides [Express](https://expressjs.com/) middleware for [HMAC](https://en.wikipedia.org/wiki/HMAC) authentication.
 
-- :free: Zero dependencies
+- :star2: Zero dependencies
 - :clock1: Timing safe
 - :white_check_mark: 100% code coverage
 - :books: Support for all hash algorithms
-- :lock: Replay attacks prevention.
+- :lock: Replay attacks prevention
 
 ## Installation
 
@@ -111,7 +111,7 @@ Now you have configured your HMAC middleware, you need to structure your HMAC in
 
 #### What your HMAC should look like
 
-This example uses the default `options.header` and `options.identifier`. These will be different if you override said defaults
+This example uses the default `options.header` and `options.identifier`.
 
 `Authorization: HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86`
 
@@ -119,17 +119,24 @@ This example uses the default `options.header` and `options.identifier`. These w
 
 `Authorization:` This is the header you send in the request that contains the HMAC. This is what the middleware will look for.
 
-`HMAC` This is the identifier the middleware will look for, this is fine to be left as the default
+`HMAC` This is the identifier the middleware will look for.
 
-`1573504737300` This is the UNIX timestamp of when the request was sent
+`1573504737300` This is the UNIX timestamp of when the request was sent.
 
-`76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86` This is the HMAC digest, see [generating your HMAC digest](#generating-your-hmac-digest)
+`76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86` This is the HMAC digest, see [generating your HMAC digest](#generating-your-hmac-digest).
 
 ## Generating your HMAC digest
 
 The HMAC signature is 4 parts (1 part optional) joined **without** a seperator. **UNIX TIMESTAMP**, **VERB**, **ROUTE** and optionally **MD5 JSON STRINGIFIED REQUEST BODY**
 
-Below is an example request and how we would build that request's HMAC
+| Part  | Required  | Example  | Description  |
+|---|---|---|---|
+| Unix Timestamp  | Yes  | `1573504737300`  | The current unix timestamp  |
+| Verb  | Yes  | `POST`  | The verb of the request you are making |
+| Route  | Yes  | `/api/order`  | The route you are requesting  |
+| MD5 JSON Body  | No  | `9bb58f26192e4ba00f01e2e7b136bbd8`  | The MD5 has of your `JSON.stringify` request body  |
+
+Below is an example request and how we would build that requests HMAC
 
 ```
 POST http://www.domain.com/api/order HTTP/1.0
@@ -164,9 +171,9 @@ console.log(`HMAC ${time}:${hmac.digest('hex')}`);
 
 The parameter `options.maxInterval` is the amount of time in seconds that a request is valid. We compare the unix timestamp sent in the HMAC header to the current time on the server. If the time difference is greater than `options.maxInterval` request is rejected.
 
-The unix timestamp sent in the header is also included in the HMAC digest, this is to prevent someone replicating a request and changing the unix timestamp to be in a valid range of `options.maxInterval`
+Similarly `options.minInterval` (introduced in `4.1.0`) is the amount of time in seconds that a request is valid for if in the future. This is a common issue for out of sync computer times (the requester time is slightly ahead of the server). If you find requests being rejected as they are from the future you may want to adjust this.
 
-The parameter `options.minInterval` (introduced in `4.1.0`) is the amount of time in seconds that a request is valid for if in the future. This is a common issue for out of sync computer times (the requester time is slightly ahead of the server). By default this value is set to `0`, if you find requests being rejected as they are from the future you may want to adjust this.
+The unix timestamp sent in the header is also included in the HMAC digest, this is to prevent someone replicating a request and changing the unix timestamp to be in valid range of `options.maxInterval` or `options.minInterval`
 
 ## Limitations
 
@@ -182,7 +189,7 @@ You can run your own benchmarks by checking out the package and running `yarn be
 
 ## FAQs
 
-*Why is HMAC uppercase?* HMAC is an acronym for hash-based message authentication code. You can import the package as below if you need to conform to style conventions.
+*Why is HMAC uppercase?* HMAC is an acronym for [hash-based message authentication code](https://en.wikipedia.org/wiki/HMAC). You can import the package as below if you need to conform to style conventions.
 
 ```javascript
 import { HMAC as hmac } from 'hmac-auth-express';
