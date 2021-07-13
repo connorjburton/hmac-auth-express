@@ -34,7 +34,7 @@ Supports both CommonJS & ECMAScript modules.
 const { HMAC } = require('hmac-auth-express');
 ```
 
-*ECMASCript*
+*ECMAScript*
 ```javascript
 import { HMAC } from 'hmac-auth-express';
 ```
