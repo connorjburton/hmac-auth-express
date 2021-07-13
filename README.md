@@ -127,14 +127,14 @@ Now you have configured your HMAC middleware, you need to structure your HMAC in
 
 ## Generating your HMAC digest
 
-The HMAC signature is 4 parts (1 part optional) joined **without** a seperator. **UNIX TIMESTAMP**, **VERB**, **ROUTE** and optionally **MD5 JSON STRINGIFIED REQUEST BODY**
+The HMAC signature is 4 parts (1 part optional) joined **without** a seperator.
 
 | Part  | Required  | Example  | Description  |
 |---|---|---|---|
 | Unix Timestamp  | Yes  | `1573504737300`  | The current unix timestamp  |
 | Verb  | Yes  | `POST`  | The verb of the request you are making |
 | Route  | Yes  | `/api/order`  | The route you are requesting  |
-| MD5 JSON Body  | No  | `9bb58f26192e4ba00f01e2e7b136bbd8`  | The MD5 has of your `JSON.stringify` request body  |
+| MD5 JSON Body  | No  | `9bb58f26192e4ba00f01e2e7b136bbd8`  | The MD5 of your `JSON.stringify` request body  |
 
 Below is an example request and how we would build that requests HMAC
 
