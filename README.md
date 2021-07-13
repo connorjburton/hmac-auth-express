@@ -111,7 +111,7 @@ Now you have configured your HMAC middleware, you need to structure your HMAC in
 
 #### What your HMAC should look like
 
-This example uses the default `options.header` and `options.identifier`.
+*This example uses the default `options.header` and `options.identifier`.*
 
 `Authorization: HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86`
 
