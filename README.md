@@ -5,7 +5,13 @@
 [![GitHub](https://img.shields.io/github/license/connorjburton/hmac-auth-express)](https://github.com/connorjburton/hmac-auth-express/blob/master/LICENSE)
 
 
-This package provides [Express](https://expressjs.com/) middleware for HMAC authentication. Zero dependencies, timing safe, 100% code coverage, support for all node hash algorithms, replay attacks prevention.
+This package provides [Express](https://expressjs.com/) middleware for [HMAC](https://en.wikipedia.org/wiki/HMAC) authentication.
+
+- :free: Zero dependencies
+- :clock1: Timing safe
+- :white_check_mark: 100% code coverage
+- :books: Support for all hash algorithms
+- :lock: Replay attacks prevention.
 
 ## Installation
 
@@ -161,6 +167,10 @@ The parameter `options.maxInterval` is the amount of time in seconds that a requ
 The unix timestamp sent in the header is also included in the HMAC digest, this is to prevent someone replicating a request and changing the unix timestamp to be in a valid range of `options.maxInterval`
 
 The parameter `options.minInterval` (introduced in `4.1.0`) is the amount of time in seconds that a request is valid for if in the future. This is a common issue for out of sync computer times (the requester time is slightly ahead of the server). By default this value is set to `0`, if you find requests being rejected as they are from the future you may want to adjust this.
+
+## Limitations
+
+This package does not support plain text, form or multi part POST bodies and is primarily intended to be used for JSON bodies. [Plain text support](https://github.com/connorjburton/hmac-auth-express/issues/61) is planned.
 
 ## Performance
 
