@@ -43,6 +43,8 @@ See [FAQ's](#faqs) for design decisions around exports.
 
 #### Basic middleware registration
 
+This package **must** be registered *after* the `express.json()` middleware is registered.
+
 ```javascript
 app.use('/api', HMAC('secret'));
 ```
