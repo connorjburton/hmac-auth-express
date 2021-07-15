@@ -154,6 +154,14 @@ hmac.update(contentHash.digest('hex'));
 console.log(`HMAC ${time}:${hmac.digest('hex')}`);
 ```
 
+You can also use the exported `generate(secret: string, algorithm: string = 'sha256', unix: string | number, method: string, url: string, body?: Record<string, unknown> | unknown[]): crypto.Hmac` function.
+
+```javascript
+const { generate } = require('hmac-auth-express');
+
+generate('secret', Date.now().toString(), 'POST', '/api/order', { foo: 'bar' }).digest('hex'); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
+```
+
 ## Replay attacks
 
 The parameter `options.maxInterval` is the amount of time in seconds that a request is valid. We compare the unix timestamp sent in the HMAC header to the current time on the server. If the time difference is greater than `options.maxInterval` request is rejected.
