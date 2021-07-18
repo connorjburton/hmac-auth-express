@@ -39,7 +39,7 @@ const { HMAC } = require('hmac-auth-express');
 import { HMAC } from 'hmac-auth-express';
 ```
 
-See [FAQ's](#faqs) for design decisions around exports.
+See [FAQs](#faqs) for design decisions around exports.
 
 #### Basic middleware registration
 
