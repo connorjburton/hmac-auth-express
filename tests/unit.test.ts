@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { request, Request, Response } from 'express';
+import crypto from 'crypto';
 
 import { HMAC, AuthError, generate } from './../src/index.js';
 
@@ -66,6 +67,31 @@ describe('unit', () => {
         middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(KEY, undefined, TIME, METHOD, URL, body).digest('hex')}` }, body }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
+
+    test('passes with every available algorithm', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => TIME;
+
+        for (const hash of crypto.getHashes()) {
+            try {
+                const middleware = HMAC('secret', { algorithm: hash });
+
+                middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(KEY, hash, TIME, METHOD, URL, BODY).digest('hex')}` }}) as Request, {} as Response, spies.next);
+
+                expect(spies.next).toHaveBeenCalledWith();
+                jest.clearAllMocks();
+            } catch (e) {
+                // this error is for algos that are not supported by openssl
+                // this can change per platform so we can not have a fixed exclusion list
+                // instead we simply check if we get the error indicating it's not supported and skip over it
+                if (e.message !== 'error:00000000:lib(0):func(0):reason(0)') {
+                    throw e;
+                }
+            }
+        }
 
         global.Date.now = originalDateNow;
     });

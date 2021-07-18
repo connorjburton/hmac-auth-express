@@ -189,6 +189,8 @@ The unix timestamp sent in the header is also included in the HMAC digest, this 
 
 This package does not support plain text, form or multi part POST bodies and is primarily intended to be used for JSON bodies. [Plain text support](https://github.com/connorjburton/hmac-auth-express/issues/61) is planned.
 
+Be mindful of what algorithm you choose to use, this package will not stop you attempting to use an algorithm that is not supported by OpenSSL. [See the Node.js website for more information](https://nodejs.org/en/knowledge/cryptography/how-to-use-crypto-module/#hash-algorithms-that-work-with-crypto).
+
 ## Performance
 
 You can run your own benchmarks by checking out the package and running `yarn benchmark`. Below are the most recent benchmark results.
@@ -213,6 +215,8 @@ import HMAC from 'hmac-auth-exppress';
 ```
 
 If you have a suggestion on how to export a default consistently then please [open an issue](https://github.com/connorjburton/hmac-auth-express/issues/new).
+
+*Why is MD5 used instead of x?* We use MD5 to create a hash of the request body (if available) as part of building the digest, which is then hashed in totality with SHA256 (by default), therefore we are not using MD5 to secure any part of this package. MD5 is used  as it is faster than the built-in alternatives and adding an external dependency for a faster hashing algorithm such as Murmur is unnecessary.
 
 ## Credits
 
