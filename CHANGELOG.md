@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.1.0](https://github.com/connorjburton/hmac-auth-express/compare/v8.0.2...v8.1.0) (2021-07-18)
+
+
+### Features
+
+* exposing generate function to easily generate hmac digests ([7996b40](https://github.com/connorjburton/hmac-auth-express/commit/7996b40d1ba958d63546e3d619ebba65a0a8d837))
+
+
+### Bug Fixes
+
+* updating benchmark tool to use new default header ([7836d75](https://github.com/connorjburton/hmac-auth-express/commit/7836d7547f1c09e02488feb2c1be652cef42ef07))
+
 ## [8.0.1-8.0.2](https://github.com/connorjburton/hmac-auth-express/compare/v8.0.0...v8.0.2) (2021-07-11)
 
 ### Bug Fixes

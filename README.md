@@ -39,7 +39,7 @@ const { HMAC } = require('hmac-auth-express');
 import { HMAC } from 'hmac-auth-express';
 ```
 
-See [FAQ's](#faqs) for design decisions around exports.
+See [FAQs](#faqs) for design decisions around exports.
 
 #### Basic middleware registration
 
@@ -169,6 +169,14 @@ hmac.update(contentHash.digest('hex'));
 console.log(`HMAC ${time}:${hmac.digest('hex')}`);
 ```
 
+You can also use the exported `generate(secret: string, algorithm: string = 'sha256', unix: string | number, method: string, url: string, body?: Record<string, unknown> | unknown[]): crypto.Hmac` function.
+
+```javascript
+const { generate } = require('hmac-auth-express');
+
+generate('secret', 'sha256', Date.now().toString(), 'POST', '/api/order', { foo: 'bar' }).digest('hex'); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
+```
+
 ## Replay attacks
 
 The parameter `options.maxInterval` is the amount of time in seconds that a request is valid. We compare the unix timestamp sent in the HMAC header to the current time on the server. If the time difference is greater than `options.maxInterval` request is rejected.
@@ -181,13 +189,15 @@ The unix timestamp sent in the header is also included in the HMAC digest, this 
 
 This package does not support plain text, form or multi part POST bodies and is primarily intended to be used for JSON bodies. [Plain text support](https://github.com/connorjburton/hmac-auth-express/issues/61) is planned.
 
+Be mindful of what algorithm you choose to use, this package will not stop you attempting to use an algorithm that is not supported by OpenSSL. [See the Node.js website for more information](https://nodejs.org/en/knowledge/cryptography/how-to-use-crypto-module/#hash-algorithms-that-work-with-crypto).
+
 ## Performance
 
-You can run your own benchmarks by checking out the package and running `yarn benchmark`. Below are the most recent benchmark results.
+You can run your own benchmarks by checking out the package and running `yarn benchmark`. Below are the most recent benchmark results. Node >16 is required to run the benchmark tool.
 
 | Environment  | Operations  | Duration  | ops/second  |
 |---|---|---|---|
-| `Windows 10 Pro, i5-7600K@3.80GHz`  | 1,000,000  | 24,793ms  | 40,334  |
+| `Windows 10 Pro, i5-7600K@3.80GHz`  | 1,000,000  | 24,283ms  | 41,180  |
 
 ## FAQs
 
@@ -205,6 +215,8 @@ import HMAC from 'hmac-auth-exppress';
 ```
 
 If you have a suggestion on how to export a default consistently then please [open an issue](https://github.com/connorjburton/hmac-auth-express/issues/new).
+
+*Why is MD5 used instead of x?* We use MD5 to create a hash of the request body (if available) as part of building the digest, which is then hashed in totality with SHA256 (by default), therefore we are not using MD5 to secure any part of this package. MD5 is used  as it is faster than the built-in alternatives and adding an external dependency for a faster hashing algorithm such as Murmur is unnecessary.
 
 ## Credits
 

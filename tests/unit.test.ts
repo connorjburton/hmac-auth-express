@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { request, Request, Response } from 'express';
+import crypto from 'crypto';
 
-import { HMAC, AuthError } from './../src/index.js';
+import { HMAC, AuthError, generate } from './../src/index.js';
 
 interface MockRequest {
     headers?: {
@@ -16,13 +17,19 @@ interface Spies {
     next: jest.Mock
 }
 
+const KEY = 'secret';
+const TIME = 1573504737300;
+const METHOD = 'POST';
+const URL = '/api/order';
+const BODY = { foo: 'bar' };
+
 function mockedRequest(override: MockRequest = {}): Partial<Request> {
     const req = request;
-    req.headers = override.headers ?? { authorization: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86' };
-    req.method = override.method ?? 'POST';
-    req.originalUrl = override.originalUrl ?? '/api/order';
+    req.headers = override.headers ?? { authorization: `HMAC ${TIME}:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86` };
+    req.method = override.method ?? METHOD;
+    req.originalUrl = override.originalUrl ?? URL;
     // We want to override body with undefined if we pass it in
-    req.body = Object.prototype.hasOwnProperty.call(override, 'body') ? override.body : { foo: 'bar' };
+    req.body = Object.prototype.hasOwnProperty.call(override, 'body') ? override.body : BODY;
 
     return req;
 }
@@ -38,9 +45,9 @@ describe('unit', () => {
 
     test('passes hmac', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
         
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
 
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
@@ -51,24 +58,51 @@ describe('unit', () => {
 
     test('passes hamc with array as value', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
-        
-        const middleware = HMAC('secret');
+        global.Date.now = () => TIME;
 
-        middleware(mockedRequest({ headers: { authorization: 'HMAC 1573504737300:4f1c59c68f09af0790b4531118438ae179689eebc5bb30a8359719e319f70b85' }, body: [1, 2, 3] }) as Request, {} as Response, spies.next);
+        const middleware = HMAC(KEY);
+
+        const body = [1, 2, 3];
+
+        middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(KEY, undefined, TIME, METHOD, URL, body).digest('hex')}` }, body }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
 
+    test('passes with every available algorithm', () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => TIME;
+
+        for (const hash of crypto.getHashes()) {
+            try {
+                const middleware = HMAC('secret', { algorithm: hash });
+
+                middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(KEY, hash, TIME, METHOD, URL, BODY).digest('hex')}` }}) as Request, {} as Response, spies.next);
+
+                expect(spies.next).toHaveBeenCalledWith();
+                jest.clearAllMocks();
+            } catch (e) {
+                // this error is for algos that are not supported by openssl
+                // this can change per platform so we can not have a fixed exclusion list
+                // instead we simply check if we get the error indicating it's not supported and skip over it
+                if (e.message !== 'error:00000000:lib(0):func(0):reason(0)') {
+                    throw e;
+                }
+            }
+        }
+
+        global.Date.now = originalDateNow;
+    });
+
     test('passes hmac with different algorithm', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
         
         const middleware = HMAC('secret', { algorithm: 'ripemd160' });
 
-        middleware(mockedRequest({ headers: { authorization: 'HMAC 1573504737300:b55d3ad0b64e106655871bbe7e0d1f55a1f81f7b' }}) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(KEY, 'ripemd160', TIME, METHOD, URL, BODY).digest('hex')}` }}) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
@@ -77,13 +111,13 @@ describe('unit', () => {
 
     test('passes hmac without body', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
         
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
 
         middleware(mockedRequest({
             headers: {
-                authorization: 'HMAC 1573504737300:39f9c6b0ea547d46ac03d4e7b0acd1194c2a06f1037620ba7986f8eb017c98ba'
+                authorization: `HMAC ${TIME}:${generate(KEY, undefined, TIME, METHOD, URL).digest('hex')}`
             },
             body: undefined
         }) as Request, {} as Response, spies.next);
@@ -95,7 +129,7 @@ describe('unit', () => {
 
     test('fails hmac not matching', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
 
         const middleware = HMAC('wrongsecret');
 
@@ -109,7 +143,7 @@ describe('unit', () => {
     });
 
     test('fails hmac on no header', () => {
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
 
         middleware(mockedRequest({ headers: {} }) as Request, {} as Response, spies.next);
 
@@ -129,7 +163,7 @@ describe('unit', () => {
     });
 
     test('fails hmac on incorrect identifier', () => {
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
 
         middleware(mockedRequest({ headers: { authorization: 'FOO' } }) as Request, {} as Response, spies.next);
 
@@ -149,7 +183,7 @@ describe('unit', () => {
     });
 
     test('fails if unix timestamp not found', () => {        
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
 
         middleware(mockedRequest({ headers: { authorization: 'HMAC :a2bc3' } }) as Request, {} as Response, spies.next);
 
@@ -162,7 +196,7 @@ describe('unit', () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1573508732400;
         
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
 
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
@@ -207,7 +241,7 @@ describe('unit', () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1542055800000;
 
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
 
         middleware(mockedRequest() as Request, {} as Response, spies.next);
 
@@ -233,11 +267,11 @@ describe('unit', () => {
 
     test('fails if missing hmac digest', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
 
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
 
-        middleware(mockedRequest({ headers: { authorization: 'HMAC 1573504737300:' }}) as Request, {} as Response, spies.next);
+        middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:` }}) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -248,13 +282,13 @@ describe('unit', () => {
 
     test('passes hmac with empty object as body', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
         
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
 
         middleware(mockedRequest({
             headers: {
-                authorization: 'HMAC 1573504737300:1af576ff2225e3955a2be42078e20f59d6c5d022aa21c3c83eb3896c39762df3'
+            authorization: `HMAC ${TIME}:${generate(KEY, undefined, TIME, METHOD, URL, {}).digest('hex')}`
             },
             body: {}
         }) as Request, {} as Response, spies.next);
@@ -266,15 +300,17 @@ describe('unit', () => {
 
     test('passes hmac with basic object as body', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
         
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
+
+        const body = { foo: 'bar' }
 
         middleware(mockedRequest({
             headers: {
-                authorization: 'HMAC 1573504737300:76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86'
+                authorization: `HMAC ${TIME}:${generate(KEY, undefined, TIME, METHOD, URL, body).digest('hex')}`
             },
-            body: { foo: 'bar' }
+            body
         }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
@@ -284,15 +320,17 @@ describe('unit', () => {
 
     test('passes hmac with complex object as body', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
         
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
+
+        const body = { foo: 'bar', baz: { fizz: 1, buzz: [1, 2] } };
 
         middleware(mockedRequest({
             headers: {
-                authorization: 'HMAC 1573504737300:8ecf6a09404214f187e6746e37bdb0be995abb59001cd0b803133de240a0e395'
+                authorization: `HMAC ${TIME}:${generate(KEY, undefined, TIME, METHOD, URL, body).digest('hex')}`
             },
-            body: { foo: 'bar', baz: { fizz: 1, buzz: [1, 2] } }
+            body
         }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
@@ -302,15 +340,17 @@ describe('unit', () => {
 
     test('passes hmac with empty array as body', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
         
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
+
+        const body: [] = [];
 
         middleware(mockedRequest({
             headers: {
-                authorization: 'HMAC 1573504737300:099eb78ea6aa95d13f79cfb64023156f2f7cb00cdb63375169ea6a06b38796b4'
+                authorization: `HMAC ${TIME}:${generate(KEY, undefined, TIME, METHOD, URL, body).digest('hex')}`
             },
-            body: []
+            body
         }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
@@ -320,15 +360,17 @@ describe('unit', () => {
 
     test('passes hmac with array as body', () => {
         const originalDateNow = Date.now.bind(global.Date);
-        global.Date.now = () => 1573504737300;
+        global.Date.now = () => TIME;
         
-        const middleware = HMAC('secret');
+        const middleware = HMAC(KEY);
+
+        const body = [1, 'test', {}, ['a', {}]];
 
         middleware(mockedRequest({
             headers: {
-                authorization: 'HMAC 1573504737300:1a660f056f582b9154a745e7a04937d37e3980302de617f9bdcadf820902e5a6'
+                authorization: `HMAC ${TIME}:${generate(KEY, undefined, TIME, METHOD, URL, body).digest('hex')}`
             },
-            body: [1, 'test', {}, ['a', {}]]
+            body
         }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();

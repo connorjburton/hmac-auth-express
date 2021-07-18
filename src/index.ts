@@ -23,6 +23,23 @@ const defaults: Options = {
     minInterval: 0 
 }
 
+export function generate(secret: string, algorithm: string = defaults.algorithm, unix: string | number, method: string, url: string, body?: Record<string, unknown> | unknown[]): crypto.Hmac {
+    const hmac = crypto.createHmac(algorithm, secret);
+
+    hmac.update(typeof unix === 'number' ? unix.toString() : unix);
+    hmac.update(method);
+    hmac.update(url);
+
+    // if we have a body, create a md5 hash of it and add it to the hmac
+    if (typeof body === 'object' && body !== null) {
+        const hash = crypto.createHash('md5');
+        hash.update(JSON.stringify(body));
+        hmac.update(hash.digest('hex'));
+    }
+
+    return hmac;
+}
+
 export function HMAC(secret: string, options: Partial<Options> = {}): RequestHandler {
     const mergedOpts: Options = { ...defaults, ...options };
 
@@ -57,24 +74,11 @@ export function HMAC(secret: string, options: Partial<Options> = {}): RequestHan
             return next(new AuthError('HMAC digest was not present in header'));
         }
 
-        const hmac = crypto.createHmac(mergedOpts.algorithm, secret);
-
-        hmac.update(unixMatch[1]); // add timestamp provided in header to make sure it hasn't been changed
-        hmac.update(request.method); // add verb e.g POST, GET
-        hmac.update(request.originalUrl); // add url e.g /api/order
-
-        // if we have a request body, create a md5 hash of it and add it to the hmac
-        if (typeof request.body === 'object' && request.body !== null) {
-            const hash = crypto.createHash('md5');
-            hash.update(JSON.stringify(request.body)); // we add it as a json string
-            hmac.update(hash.digest('hex'));
-        }
-
-        const hmacDigest = hmac.digest(); // returns Uint8Array buffer
+        const hmac = generate(secret, mergedOpts.algorithm, unixMatch[1], request.method, request.originalUrl, request.body).digest();
         const sourceDigest = stringToBuffer(hashMatch[1]); // convert string to buffer
 
         // use timing safe check to prevent timing attacks
-        if (hmacDigest.length !== sourceDigest.length || !crypto.timingSafeEqual(hmacDigest, sourceDigest)) {
+        if (hmac.length !== sourceDigest.length || !crypto.timingSafeEqual(hmac, sourceDigest)) {
             return next(new AuthError('HMAC\'s did not match'));
         }
 
