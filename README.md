@@ -193,11 +193,11 @@ Be mindful of what algorithm you choose to use, this package will not stop you a
 
 ## Performance
 
-You can run your own benchmarks by checking out the package and running `yarn benchmark`. Below are the most recent benchmark results.
+You can run your own benchmarks by checking out the package and running `yarn benchmark`. Below are the most recent benchmark results. Node >16 is required to run the benchmark tool.
 
 | Environment  | Operations  | Duration  | ops/second  |
 |---|---|---|---|
-| `Windows 10 Pro, i5-7600K@3.80GHz`  | 1,000,000  | 24,793ms  | 40,334  |
+| `Windows 10 Pro, i5-7600K@3.80GHz`  | 1,000,000  | 24,283ms  | 41,180  |
 
 ## FAQs
 
