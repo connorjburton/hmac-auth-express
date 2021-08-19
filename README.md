@@ -58,7 +58,7 @@ app.use('/api', HMAC('secret', {
   header: 'myheader',
   maxInterval: 600,
   minInterval: 600
-});
+}));
 ```
 
 #### Function parameters
