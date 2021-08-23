@@ -15,6 +15,8 @@ export interface Options {
     minInterval: number;
 }
 
+export type DynamicSecret = string | ((req: Request) => string | undefined) | ((req: Request) => Promise<string|undefined>);
+
 const defaults: Options = {
     algorithm: 'sha256',
     identifier: 'HMAC',
@@ -40,12 +42,24 @@ export function generate(secret: string, algorithm: string = defaults.algorithm,
     return hmac;
 }
 
-export function HMAC(secret: string, options: Partial<Options> = {}): RequestHandler {
+async function determineSecret(secret: DynamicSecret, req: Request): Promise<string | undefined> {
+    return typeof secret === 'function' ? await secret(req) : secret;
+}
+
+export function HMAC(secret: DynamicSecret, options: Partial<Options> = {}): RequestHandler {
     const mergedOpts: Options = { ...defaults, ...options };
 
     validateArguments(secret, mergedOpts);
 
-    return function(request: Request, _, next: NextFunction): void {
+    return async function(request: Request, _, next: NextFunction): Promise<void> {
+        // we have to create a scoped secret per request, if we were to reassign the original `secret` variable
+        // the next request that comes in will no longer be the secret function
+        // this means we have to explicitly check it's not undefined too
+        const scopedSecret = await determineSecret(secret, request);
+        if (typeof scopedSecret !== 'string' || scopedSecret.length === 0) {
+            return next(new AuthError(`Invalid secret. Expected non-empty string but got '${scopedSecret}' (type: ${typeof scopedSecret})`));
+        }
+
         const header = request.get(mergedOpts.header);
         if (typeof header !== 'string') {
             return next(new AuthError(`Header provided not in sent headers. Expected ${mergedOpts.header} but not found in request.headers`));
@@ -74,7 +88,7 @@ export function HMAC(secret: string, options: Partial<Options> = {}): RequestHan
             return next(new AuthError('HMAC digest was not present in header'));
         }
 
-        const hmac = generate(secret, mergedOpts.algorithm, unixMatch[1], request.method, request.originalUrl, request.body).digest();
+        const hmac = generate(scopedSecret, mergedOpts.algorithm, unixMatch[1], request.method, request.originalUrl, request.body).digest();
         const sourceDigest = stringToBuffer(hashMatch[1]); // convert string to buffer
 
         // use timing safe check to prevent timing attacks

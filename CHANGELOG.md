@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.2.0](https://github.com/connorjburton/hmac-auth-express/compare/v8.1.0...v8.2.0) (2021-08-23)
+
+
+### Features
+
+* allow secret parameter to be a function to support dynamic secrets ([e612eff](https://github.com/connorjburton/hmac-auth-express/commit/e612effcf7adea2541d33593880033e14f9be0a9))
+
 ## [8.1.0](https://github.com/connorjburton/hmac-auth-express/compare/v8.0.2...v8.1.0) (2021-07-18)
 
 

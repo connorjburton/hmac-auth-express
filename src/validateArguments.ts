@@ -1,10 +1,10 @@
 import crypto from 'crypto';
 
-import { Options } from './index';
+import { Options, DynamicSecret } from './index';
 
-export default function(secret: string, options: Options): void {
-    if (!secret || typeof secret !== 'string') {
-        throw new TypeError(`Invalid value provided for property secret. Expected non-empty string but got '${secret}' (type: ${typeof secret})`);
+export default function(secret: DynamicSecret, options: Options): void {
+    if (!secret || (typeof secret !== 'string' && typeof secret !== 'function')) {
+        throw new TypeError(`Invalid value provided for property secret. Expected non-empty string or function but got '${secret}' (type: ${typeof secret})`);
     }
 
     if (typeof options.algorithm !== 'string' || !crypto.getHashes().includes(options.algorithm)) {
