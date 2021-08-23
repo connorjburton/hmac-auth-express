@@ -67,7 +67,7 @@ The function will throw `TypeError`'s if you provide incorrect parameters.
 
 | Parameter  | Accepted Type  | Default  | Description  |
 |---|---|---|---|
-| `secret`  | *string*  | `undefined`  | Your hash secret  |
+| `secret`  | *string* | *function*  | `undefined`  | Your hash secret or [a function](#dynamic-secret)  |
 | `options.algorithm`  | *string*  | `sha256`  | Your hashing algorithm  |
 | `options.identifier`  | *string*  | `HMAC`  | The start of your `options.header` should start with this  |
 | `options.header`  | *string*  | `authorization`  | The header the HMAC is located  |
@@ -105,6 +105,20 @@ app.use((error, req, res, next) => {
     // ... handle other errors
   }
 })
+```
+
+## Dynamic Secret
+
+From [8.2.0](https://github.com/connorjburton/hmac-auth-express/releases/tag/v8.2.0) onwards you can now supply a function as your `secret` parameter. This function accepts 1 parameter, being an `express.Request` object. This function can be `async`. You can use this feature to dynamically determine the secret of the request, for example if you have different HMAC secrets depending on the URL of the request.
+
+```javascript
+const dynamicSecret = async (req) => {
+  // determine and return what the secret should be from the request object
+
+  return myDynamicSecret;
+}
+
+app.use(HMAC(dynamicSecret));
 ```
 
 ## Structuring your HMAC header
