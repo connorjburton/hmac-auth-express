@@ -43,20 +43,20 @@ describe('unit', () => {
         jest.clearAllMocks();
     });
 
-    test('passes hmac', () => {
+    test('passes hmac', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
         
         const middleware = HMAC(SECRET);
 
-        middleware(mockedRequest() as Request, {} as Response, spies.next);
+        await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
 
-    test('passes hamc with array as value', () => {
+    test('passes hamc with array as value', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
 
@@ -64,14 +64,14 @@ describe('unit', () => {
 
         const body = [1, 2, 3];
 
-        middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL, body).digest('hex')}` }, body }) as Request, {} as Response, spies.next);
+        await middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL, body).digest('hex')}` }, body }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
 
-    test('passes with every available algorithm', () => {
+    test('passes with every available algorithm', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
 
@@ -79,7 +79,7 @@ describe('unit', () => {
             try {
                 const middleware = HMAC(SECRET, { algorithm: hash });
 
-                middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(SECRET, hash, TIME, METHOD, URL, BODY).digest('hex')}` }}) as Request, {} as Response, spies.next);
+                await middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(SECRET, hash, TIME, METHOD, URL, BODY).digest('hex')}` }}) as Request, {} as Response, spies.next);
 
                 expect(spies.next).toHaveBeenCalledWith();
                 jest.clearAllMocks();
@@ -96,26 +96,26 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('passes hmac with different algorithm', () => {
+    test('passes hmac with different algorithm', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
         
         const middleware = HMAC(SECRET, { algorithm: 'ripemd160' });
 
-        middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(SECRET, 'ripemd160', TIME, METHOD, URL, BODY).digest('hex')}` }}) as Request, {} as Response, spies.next);
+        await middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:${generate(SECRET, 'ripemd160', TIME, METHOD, URL, BODY).digest('hex')}` }}) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
 
-    test('passes hmac without body', () => {
+    test('passes hmac without body', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
         
         const middleware = HMAC(SECRET);
 
-        middleware(mockedRequest({
+        await middleware(mockedRequest({
             headers: {
                 authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL).digest('hex')}`
             },
@@ -127,13 +127,13 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('fails hmac not matching', () => {
+    test('fails hmac not matching', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
 
         const middleware = HMAC('wrongsecret');
 
-        middleware(mockedRequest() as Request, {} as Response, spies.next);
+        await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -142,63 +142,63 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('fails hmac on no header', () => {
+    test('fails hmac on no header', async () => {
         const middleware = HMAC(SECRET);
 
-        middleware(mockedRequest({ headers: {} }) as Request, {} as Response, spies.next);
+        await middleware(mockedRequest({ headers: {} }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Header provided not in sent headers. Expected authorization but not found in request.headers');
     });
 
-    test('fails hmac on no header with custom header', () => {
+    test('fails hmac on no header with custom header', async () => {
         const middleware = HMAC(SECRET, { header: 'myhmac' });
 
-        middleware(mockedRequest({ headers: {} }) as Request, {} as Response, spies.next);
+        await middleware(mockedRequest({ headers: {} }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Header provided not in sent headers. Expected myhmac but not found in request.headers');
     });
 
-    test('fails hmac on incorrect identifier', () => {
+    test('fails hmac on incorrect identifier', async () => {
         const middleware = HMAC(SECRET);
 
-        middleware(mockedRequest({ headers: { authorization: 'FOO' } }) as Request, {} as Response, spies.next);
+        await middleware(mockedRequest({ headers: { authorization: 'FOO' } }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Header did not start with correct identifier. Expected HMAC but not found in options.header');
     });
 
-    test('fails hmac on incorrect identifier with custom identifier', () => {
+    test('fails hmac on incorrect identifier with custom identifier', async () => {
         const middleware = HMAC(SECRET, { identifier: 'BAR' });
 
-        middleware(mockedRequest({ headers: { authorization: 'FOO' } }) as Request, {} as Response, spies.next);
+        await middleware(mockedRequest({ headers: { authorization: 'FOO' } }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Header did not start with correct identifier. Expected BAR but not found in options.header');
     });
 
-    test('fails if unix timestamp not found', () => {        
+    test('fails if unix timestamp not found', async () => {        
         const middleware = HMAC(SECRET);
 
-        middleware(mockedRequest({ headers: { authorization: 'HMAC :a2bc3' } }) as Request, {} as Response, spies.next);
+        await middleware(mockedRequest({ headers: { authorization: 'HMAC :a2bc3' } }) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
         expect(calledArg.message).toBe('Unix timestamp was not present in header');
     });
 
-    test('fails if time difference too great', () => {
+    test('fails if time difference too great', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1573508732400;
         
         const middleware = HMAC(SECRET);
 
-        middleware(mockedRequest() as Request, {} as Response, spies.next);
+        await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -207,14 +207,14 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('fails if time difference too great with custom time', () => {
+    test('fails if time difference too great with custom time', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1573591800000;
 
         // 1 day
         const middleware = HMAC(SECRET, { maxInterval: 86400 });
 
-        middleware(mockedRequest() as Request, {} as Response, spies.next);
+        await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -223,27 +223,27 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('passes if within maxInterval', () => {
+    test('passes if within maxInterval', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1573588200000;
 
         // 1 day
         const middleware = HMAC(SECRET, { maxInterval: 86400 });
 
-        middleware(mockedRequest() as Request, {} as Response, spies.next);
+        await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
 
-    test('fails if time before timestamp in hmac', () => {
+    test('fails if time before timestamp in hmac', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1542055800000;
 
         const middleware = HMAC(SECRET);
 
-        middleware(mockedRequest() as Request, {} as Response, spies.next);
+        await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -252,26 +252,26 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('passes if time before timestamp in hmac but minInterval is configured', () => {
+    test('passes if time before timestamp in hmac but minInterval is configured', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => 1573504736300;
 
         const middleware = HMAC(SECRET, { minInterval: 1 });
 
-        middleware(mockedRequest() as Request, {} as Response, spies.next);
+        await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });
 
-    test('fails if missing hmac digest', () => {
+    test('fails if missing hmac digest', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
 
         const middleware = HMAC(SECRET);
 
-        middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:` }}) as Request, {} as Response, spies.next);
+        await middleware(mockedRequest({ headers: { authorization: `HMAC ${TIME}:` }}) as Request, {} as Response, spies.next);
 
         const calledArg = spies.next.mock.calls.pop()[0];
         expect(calledArg).toBeInstanceOf(AuthError);
@@ -280,13 +280,13 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('passes hmac with empty object as body', () => {
+    test('passes hmac with empty object as body', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
         
         const middleware = HMAC(SECRET);
 
-        middleware(mockedRequest({
+        await middleware(mockedRequest({
             headers: {
             authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL, {}).digest('hex')}`
             },
@@ -298,7 +298,7 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('passes hmac with basic object as body', () => {
+    test('passes hmac with basic object as body', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
         
@@ -306,7 +306,7 @@ describe('unit', () => {
 
         const body = { foo: 'bar' }
 
-        middleware(mockedRequest({
+        await middleware(mockedRequest({
             headers: {
                 authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL, body).digest('hex')}`
             },
@@ -318,7 +318,7 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('passes hmac with complex object as body', () => {
+    test('passes hmac with complex object as body', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
         
@@ -326,7 +326,7 @@ describe('unit', () => {
 
         const body = { foo: 'bar', baz: { fizz: 1, buzz: [1, 2] } };
 
-        middleware(mockedRequest({
+        await middleware(mockedRequest({
             headers: {
                 authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL, body).digest('hex')}`
             },
@@ -338,7 +338,7 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('passes hmac with empty array as body', () => {
+    test('passes hmac with empty array as body', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
         
@@ -346,7 +346,7 @@ describe('unit', () => {
 
         const body: [] = [];
 
-        middleware(mockedRequest({
+        await middleware(mockedRequest({
             headers: {
                 authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL, body).digest('hex')}`
             },
@@ -358,7 +358,7 @@ describe('unit', () => {
         global.Date.now = originalDateNow;
     });
 
-    test('passes hmac with array as body', () => {
+    test('passes hmac with array as body', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
         
@@ -366,7 +366,7 @@ describe('unit', () => {
 
         const body = [1, 'test', {}, ['a', {}]];
 
-        middleware(mockedRequest({
+        await middleware(mockedRequest({
             headers: {
                 authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL, body).digest('hex')}`
             },

@@ -17,8 +17,6 @@ export interface Options {
 
 export type DynamicSecret = string | ((req: Request) => string | undefined) | ((req: Request) => Promise<string|undefined>);
 
-const dynamicSecretErr = (secret: unknown): AuthError => new AuthError(`Invalid secret. Expected non-empty string but got '${secret}' (type: ${typeof secret})`);
-
 const defaults: Options = {
     algorithm: 'sha256',
     identifier: 'HMAC',
@@ -44,6 +42,10 @@ export function generate(secret: string, algorithm: string = defaults.algorithm,
     return hmac;
 }
 
+async function determineSecret(secret: DynamicSecret, req: Request): Promise<string | undefined> {
+    return typeof secret === 'function' ? await secret(req) : secret;
+}
+
 export function HMAC(secret: DynamicSecret, options: Partial<Options> = {}): RequestHandler {
     const mergedOpts: Options = { ...defaults, ...options };
 
@@ -53,19 +55,9 @@ export function HMAC(secret: DynamicSecret, options: Partial<Options> = {}): Req
         // we have to create a scoped secret per request, if we were to reassign the original `secret` variable
         // the next request that comes in will no longer be the secret function
         // this means we have to explicitly check it's not undefined too
-        let scopedSecret: string;
-        if (typeof secret === 'function') {
-            // this function may or may not be async, so await it regardless
-            const dynamicSecret = await secret(request);
-            if (typeof dynamicSecret !== 'string' || dynamicSecret.length === 0) {
-                return next(dynamicSecretErr(dynamicSecret));
-            }
-
-            scopedSecret = dynamicSecret;
-        } else if (typeof secret === 'string' && secret.length > 0) {
-            scopedSecret = secret;
-        } else {
-            return next(dynamicSecretErr(secret));
+        const scopedSecret = await determineSecret(secret, request);
+        if (typeof scopedSecret !== 'string' || scopedSecret.length === 0) {
+            return next(new AuthError(`Invalid secret. Expected non-empty string but got '${scopedSecret}' (type: ${typeof scopedSecret})`));
         }
 
         const header = request.get(mergedOpts.header);
