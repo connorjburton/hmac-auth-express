@@ -67,7 +67,7 @@ The function will throw `TypeError`'s if you provide incorrect parameters.
 
 | Parameter  | Accepted Type  | Default  | Description  |
 |---|---|---|---|
-| `secret`  | *string* | *function*  | `undefined`  | Your hash secret or [a function](#dynamic-secret)  |
+| `secret`  | *string|function*  | `undefined`  | Your hash secret or [a function](#dynamic-secret)  |
 | `options.algorithm`  | *string*  | `sha256`  | Your hashing algorithm  |
 | `options.identifier`  | *string*  | `HMAC`  | The start of your `options.header` should start with this  |
 | `options.header`  | *string*  | `authorization`  | The header the HMAC is located  |
