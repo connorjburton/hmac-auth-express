@@ -100,10 +100,6 @@ app.use((error, req, res, next) => {
       info: error.message
     })
   }
-
-  else {
-    // ... handle other errors
-  }
 })
 ```
 
