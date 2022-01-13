@@ -87,7 +87,7 @@ describe('unit', () => {
                 // this error is for algos that are not supported by openssl
                 // this can change per platform so we can not have a fixed exclusion list
                 // instead we simply check if we get the error indicating it's not supported and skip over it
-                if (e.message !== 'error:00000000:lib(0):func(0):reason(0)') {
+                if (e instanceof Error && e?.message !== 'error:00000000:lib(0):func(0):reason(0)') {
                     throw e;
                 }
             }
@@ -383,6 +383,7 @@ describe('unit', () => {
         global.Date.now = () => TIME;
 
         const dynamicSecret = async () => {
+            // this is purely to test that calling await doesn't throw an error
             await Promise.resolve();
             return 'dynamicsecret';
         };
@@ -432,6 +433,26 @@ describe('unit', () => {
         await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith(new AuthError('Invalid secret. Expected non-empty string but got \'\' (type: string)'));
+
+        global.Date.now = originalDateNow;
+    });
+
+    test('hmac correctly handles differently ordered json', async () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => TIME;
+        
+        const middleware = HMAC(SECRET);
+
+        const body = { foo: 'bar', baz: 'buzz' };
+
+        await middleware(mockedRequest({
+            headers: {
+                authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL, { baz: 'buzz', foo: 'bar' }).digest('hex')}`
+            },
+            body
+        }) as Request, {} as Response, spies.next);
+
+        expect(spies.next).toHaveBeenCalledWith();
 
         global.Date.now = originalDateNow;
     });

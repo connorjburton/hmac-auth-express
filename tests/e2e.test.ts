@@ -26,7 +26,7 @@ describe('e2e', () => {
         afterAll(() => {
             app = undefined;
             connection.close();
-        })
+        });
 
         test('passes hmac', async () => {
             const time: number = Date.now();
@@ -72,7 +72,7 @@ describe('e2e', () => {
         afterAll(() => {
             app = undefined;
             connection.close();
-        })
+        });
 
         test('passes with foo url', async () => {
             const time: number = Date.now();

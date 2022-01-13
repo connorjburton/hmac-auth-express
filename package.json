@@ -2,7 +2,17 @@
   "name": "hmac-auth-express",
   "version": "8.2.0",
   "description": "This package provides Express middleware for HMAC authentication",
-  "keywords": ["nodejs", "javascript", "middleware", "express", "node", "authentication", "express-middleware", "auth", "hmac"],
+  "keywords": [
+    "nodejs",
+    "javascript",
+    "middleware",
+    "express",
+    "node",
+    "authentication",
+    "express-middleware",
+    "auth",
+    "hmac"
+  ],
   "main": "dist/src/index.js",
   "typings": "dist/src",
   "scripts": {
@@ -44,5 +54,8 @@
   },
   "resolutions": {
     "standard-version/**/meow/trim-newlines": "4.0.2"
+  },
+  "dependencies": {
+    "fast-json-stable-stringify": "^2.1.0"
   }
 }

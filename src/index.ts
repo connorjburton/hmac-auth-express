@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { Request, RequestHandler, NextFunction } from 'express';
+import stringify from 'fast-json-stable-stringify';
 
 import stringToBuffer from './stringToBuffer';
 import validateArguments from './validateArguments';
@@ -35,7 +36,7 @@ export function generate(secret: string, algorithm: string = defaults.algorithm,
     // if we have a body, create a md5 hash of it and add it to the hmac
     if (typeof body === 'object' && body !== null) {
         const hash = crypto.createHash('md5');
-        hash.update(JSON.stringify(body));
+        hash.update(stringify(body));
         hmac.update(hash.digest('hex'));
     }
 
