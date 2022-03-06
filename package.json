@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/connorjburton/hmac-auth-express#readme",
   "devDependencies": {
-    "@commitlint/cli": "^16.0.2",
+    "@commitlint/cli": "^16.2.1",
     "@commitlint/config-conventional": "^16.0.0",
     "@types/express": "^4.17.12",
     "@types/jest": "^27.4.1",
