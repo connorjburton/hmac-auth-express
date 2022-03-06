@@ -2,10 +2,13 @@ import { createHash, createHmac, Hmac } from 'crypto';
 import { Order, UnknownObject, defaults } from './index';
 
 export interface GenerateOptions {
-    order?: Order
+    order?: Order;
 }
 
-function transformBody(body: UnknownObject | unknown[], order?: Order): UnknownObject | unknown[] {
+function transformBody(
+    body: UnknownObject | unknown[],
+    order?: Order
+): UnknownObject | unknown[] {
     // we never want to order an array as it is deterministic in JSON
     if (Array.isArray(body) || typeof order !== 'function') {
         return body;
