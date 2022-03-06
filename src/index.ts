@@ -4,20 +4,25 @@ import { Request, RequestHandler, NextFunction } from 'express';
 import stringToBuffer from './stringToBuffer';
 import validateArguments from './validateArguments';
 import AuthError from './errors';
-import generate from './generate';
+import generate, { GenerateOptions } from './generate';
 import order from './order';
 
-export { AuthError, generate, order };
+export { AuthError, generate, GenerateOptions, order };
 
 export type UnknownObject = Record<string, unknown>;
 export type DynamicSecret = string | ((req: Request) => string | undefined) | ((req: Request) => Promise<string|undefined>);
 export type Order = (o: UnknownObject) => UnknownObject;
 
 export interface Options {
+    /** Defaults to `sha256` */
     algorithm: string;
+    /** Defaults to `HMAC` */
     identifier: string;
+    /** Defaults to `authorization` */
     header: string;
+    /** Defaults to `300` */
     maxInterval: number;
+    /** Defaults to `0` */
     minInterval: number;
     order?: Order
 }

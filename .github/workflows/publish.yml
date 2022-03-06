@@ -5,12 +5,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    # Setup .npmrc file to publish to npm
     - uses: actions/setup-node@v2
       with:
         node-version: '16.x'
         registry-url: 'https://registry.npmjs.org'
-    - run: yarn
-    - run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    # - run: yarn
+    # - run: npm publish
+    #   env:
+    #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - run: yarn typedoc src
+    - run: |
+      git config --global user.name "Connor Burton"
+      git config --global user.email "connorjburton@users.noreply.github.com"
+      git commit -am "chore(docs): update typedocs after release"
+      git push

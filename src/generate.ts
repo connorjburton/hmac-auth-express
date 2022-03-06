@@ -1,7 +1,7 @@
 import { createHash, createHmac, Hmac } from 'crypto';
 import { Order, UnknownObject, defaults } from './index';
 
-interface GenerateOptions {
+export interface GenerateOptions {
     order?: Order
 }
 
