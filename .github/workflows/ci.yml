@@ -19,7 +19,7 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
             - run: yarn audit
+            - run: yarn
             - run: yarn lint:check
             - run: yarn style:check
-            - run: yarn
             - run: yarn test
