@@ -142,14 +142,14 @@ describe('unit', () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
 
-        const middleware = HMAC(SECRET, { algorithm: 'ripemd160' });
+        const middleware = HMAC(SECRET, { algorithm: 'blake2b512' });
 
         await middleware(
             mockedRequest({
                 headers: {
                     authorization: `HMAC ${TIME}:${generate(
                         SECRET,
-                        'ripemd160',
+                        'blake2b512',
                         TIME,
                         METHOD,
                         URL,
