@@ -1,12 +1,17 @@
 import crypto from 'crypto';
 import { Request, RequestHandler, NextFunction } from 'express';
-import order from './order';
 
 import stringToBuffer from './stringToBuffer';
 import validateArguments from './validateArguments';
 import AuthError from './errors';
+import generate from './generate';
+import order from './order';
 
-export { AuthError };
+export { AuthError, generate, order };
+
+export type UnknownObject = Record<string, unknown>;
+export type DynamicSecret = string | ((req: Request) => string | undefined) | ((req: Request) => Promise<string|undefined>);
+export type Order = (o: UnknownObject) => UnknownObject;
 
 export interface Options {
     algorithm: string;
@@ -14,34 +19,15 @@ export interface Options {
     header: string;
     maxInterval: number;
     minInterval: number;
+    order?: Order
 }
 
-export type DynamicSecret = string | ((req: Request) => string | undefined) | ((req: Request) => Promise<string|undefined>);
-
-const defaults: Options = {
+export const defaults: Options = {
     algorithm: 'sha256',
     identifier: 'HMAC',
     header: 'authorization',
     maxInterval: 60 * 5,
-    minInterval: 0 
-}
-
-export function generate(secret: string, algorithm: string = defaults.algorithm, unix: string | number, method: string, url: string, body?: Record<string, unknown> | unknown[]): crypto.Hmac {
-    const hmac = crypto.createHmac(algorithm, secret);
-
-    hmac.update(typeof unix === 'number' ? unix.toString() : unix);
-    hmac.update(method);
-    hmac.update(url);
-
-    // if we have a body, create a md5 hash of it and add it to the hmac
-    if (typeof body === 'object' && body !== null) {
-        const hash = crypto.createHash('md5');
-        const orderedBody = Array.isArray(body) ? body : order(body);
-        hash.update(JSON.stringify(orderedBody));
-        hmac.update(hash.digest('hex'));
-    }
-
-    return hmac;
+    minInterval: 0
 }
 
 async function determineSecret(secret: DynamicSecret, req: Request): Promise<string | undefined> {
@@ -90,7 +76,7 @@ export function HMAC(secret: DynamicSecret, options: Partial<Options> = {}): Req
             return next(new AuthError('HMAC digest was not present in header'));
         }
 
-        const hmac = generate(scopedSecret, mergedOpts.algorithm, unixMatch[1], request.method, request.originalUrl, request.body).digest();
+        const hmac = generate(scopedSecret, mergedOpts.algorithm, unixMatch[1], request.method, request.originalUrl, request.body, { order: mergedOpts.order }).digest();
         const sourceDigest = stringToBuffer(hashMatch[1]); // convert string to buffer
 
         // use timing safe check to prevent timing attacks

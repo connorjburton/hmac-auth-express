@@ -1,4 +1,4 @@
-type UnknownObject = Record<string, unknown>;
+import { UnknownObject } from './index';
 
 export default function order(o: UnknownObject): UnknownObject {
     if (typeof o !== 'object' || o === null || Array.isArray(o)) {

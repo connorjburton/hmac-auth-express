@@ -2,7 +2,7 @@
 import { request, Request, Response } from 'express';
 import crypto from 'crypto';
 
-import { HMAC, AuthError, generate } from '../../src/index.js';
+import { HMAC, AuthError, generate, order } from '../../src/index.js';
 
 interface MockRequest {
     headers?: {
@@ -441,7 +441,7 @@ describe('unit', () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
         
-        const middleware = HMAC(SECRET);
+        const middleware = HMAC(SECRET, { order });
 
         const body = { foo: 'bar', baz: 'buzz' };
 
@@ -449,7 +449,7 @@ describe('unit', () => {
             headers: {
                 authorization: `HMAC ${TIME}:${generate(SECRET, undefined, TIME, METHOD, URL, { baz: 'buzz', foo: 'bar' }).digest('hex')}`
             },
-            body
+            body,
         }) as Request, {} as Response, spies.next);
 
         expect(spies.next).toHaveBeenCalledWith();
