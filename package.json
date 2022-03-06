@@ -52,8 +52,5 @@
   "peerDependencies": {
     "express": "^4.0.0"
   },
-  "resolutions": {
-    "jest/**/tmpl": "1.0.5"
-  },
   "dependencies": {}
 }
