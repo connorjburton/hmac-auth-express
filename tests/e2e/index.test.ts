@@ -1,6 +1,6 @@
 import { Server } from 'http';
 import express from 'express';
-import got, { Response, Options } from 'got';
+import got, { Response, NormalizedOptions } from 'got';
 import { HMAC, generate } from '../../src/index';
 
 const PORT = 3000;
@@ -34,13 +34,8 @@ describe('e2e', () => {
             const response: Response = await got.post(`http://localhost:${PORT}/test`, {
                 json: body,
                 hooks: {
-                    beforeRequest: [(options: Options) => {
-                        if (typeof options.url !== 'string') {
-                            return;
-                        }
-
-                        const { pathname } = new URL(options.url); 
-                        options.headers['authorization'] = `HMAC ${time.toString()}:${generate(SECRET, 'sha256', time, options.method, pathname, options.json).digest('hex')}`
+                    beforeRequest: [(options: NormalizedOptions) => {
+                        options.headers['authorization'] = `HMAC ${time.toString()}:${generate(SECRET, 'sha256', time, options.method, options.url.pathname, options.json).digest('hex')}`
                     }]
                 }
             });
@@ -85,13 +80,8 @@ describe('e2e', () => {
             const response: Response = await got.post(`http://localhost:${PORT}/foo`, {
                 json: body,
                 hooks: {
-                    beforeRequest: [(options: Options) => {
-                        if (typeof options.url !== 'string') {
-                            return;
-                        }
-
-                        const { pathname } = new URL(options.url); 
-                        options.headers['authorization'] = `HMAC ${time.toString()}:${generate('firstsecret', 'sha256', time, options.method, pathname, options.json).digest('hex')}`
+                    beforeRequest: [(options: NormalizedOptions) => {
+                        options.headers['authorization'] = `HMAC ${time.toString()}:${generate('firstsecret', 'sha256', time, options.method, options.url.pathname, options.json).digest('hex')}`
                     }]
                 }
             });
@@ -105,13 +95,8 @@ describe('e2e', () => {
             const response: Response = await got.post(`http://localhost:${PORT}/bar`, {
                 json: body,
                 hooks: {
-                    beforeRequest: [(options: Options) => {
-                        if (typeof options.url !== 'string') {
-                            return;
-                        }
-
-                        const { pathname } = new URL(options.url); 
-                        options.headers['authorization'] = `HMAC ${time.toString()}:${generate('secondsecret', 'sha256', time, options.method, pathname, options.json).digest('hex')}`
+                    beforeRequest: [(options: NormalizedOptions) => {
+                        options.headers['authorization'] = `HMAC ${time.toString()}:${generate('secondsecret', 'sha256', time, options.method, options.url.pathname, options.json).digest('hex')}`
                     }]
                 }
             });
