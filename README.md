@@ -4,7 +4,6 @@
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/connorjburton/hmac-auth-express/Node.js%20CI)](https://github.com/connorjburton/hmac-auth-express/actions/workflows/ci.yml)
 [![GitHub](https://img.shields.io/github/license/connorjburton/hmac-auth-express)](https://github.com/connorjburton/hmac-auth-express/blob/master/LICENSE)
 
-
 This package provides [Express](https://expressjs.com/) middleware for [HMAC](https://en.wikipedia.org/wiki/HMAC) authentication.
 
 - :star2: Zero dependencies
@@ -43,8 +42,6 @@ See [FAQs](#faqs) for design decisions around exports.
 
 #### Basic middleware registration
 
-This package **must** be registered *after* the `express.json()` middleware is registered.
-
 ```javascript
 app.use('/api', HMAC('secret'));
 ```
@@ -61,20 +58,18 @@ app.use('/api', HMAC('secret', {
 }));
 ```
 
-#### Function parameters
+[See the docs for full list of options.](https://connorjburton.github.io/hmac-auth-express/interfaces/Options.html)
 
-The function will throw `TypeError`'s if you provide incorrect parameters.
+If you are using this package to authenticate against routes with bodies, you must register the middleware after you have parsed and set the `request.body` property. The simplest way to achieve this is to use the built-in `express.json()` method.
 
-| Parameter  | Accepted Type  | Default  | Description  |
-|---|---|---|---|
-| `secret`  | *string* or *function*  | `undefined`  | Your hash secret or [a function](#dynamic-secret)  |
-| `options.algorithm`  | *string*  | `sha256`  | Your hashing algorithm  |
-| `options.identifier`  | *string*  | `HMAC`  | The start of your `options.header` should start with this  |
-| `options.header`  | *string*  | `authorization`  | The header the HMAC is located  |
-| `options.maxInterval`  | *integer*  | `60 * 5`  | The amount of time you would like a request to be valid for, in seconds (in the past). See [time based protection against replay attacks](#replay-attacks) for more information  |
-| `options.minInterval`  | *integer*  | `0`  | The amount of time you would like a request to be valid for, in seconds (in the future). See [time based protection against replay attacks](#replay-attacks) for more information  |
+```javascript
+app.use(express.json());
+app.use('/api', HMAC('secret'));
+```
 
 #### Error Handling
+
+The middleware will throw `TypeError`'s if you provide incorrect parameters at registration time.
 
 The middleware will pass an error to [express' error handler](http://expressjs.com/en/guide/error-handling.html#writing-error-handlers). You can use the provided `AuthError`, or alternatively check the error by its code `ERR_HMAC_AUTH_INVALID`.
 
@@ -179,12 +174,14 @@ hmac.update(contentHash.digest('hex'));
 console.log(`HMAC ${time}:${hmac.digest('hex')}`);
 ```
 
-You can also use the exported `generate(secret: string, algorithm: string = 'sha256', unix: string | number, method: string, url: string, body?: Record<string, unknown> | unknown[]): crypto.Hmac` function.
+You can also use the [exported generate function](https://connorjburton.github.io/hmac-auth-express/modules.html#generate) if you are using JavaScript on your client.
 
 ```javascript
 const { generate } = require('hmac-auth-express');
 
-generate('secret', 'sha256', Date.now().toString(), 'POST', '/api/order', { foo: 'bar' }).digest('hex'); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
+const digest = generate('secret', 'sha256', Date.now().toString(), 'POST', '/api/order', { foo: 'bar' }).digest('hex'); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
+
+const hmac = `HMAC ${Date.now().toString()}:${digest}`;
 ```
 
 ## Replay attacks
@@ -195,19 +192,47 @@ Similarly `options.minInterval` (introduced in `4.1.0`) is the amount of time in
 
 The unix timestamp sent in the header is also included in the HMAC digest, this is to prevent someone replicating a request and changing the unix timestamp to be in valid range of `options.maxInterval` or `options.minInterval`
 
+## How to handle non-deterministic JSON
+
+In Node.js, JSON parsing is non-deterministic, we can not guarantee the order. This poses problems when depending on that order to build HMAC digests, as a difference in order between client and server will result in different HMAC digests and fail.
+
+There are various solutions to this problem, with various levels of effort required. As this middleware intends to abstract away complexity in how to handle HMAC we have provided helpers and extensibility to help you solve this problem.
+
+If you require your JSON parsing to be deterministic, you can use the [exported `order` function](https://connorjburton.github.io/hmac-auth-express/modules.html#order) and pass that as an [argument to `HMAC`](https://connorjburton.github.io/hmac-auth-express/interfaces/Options.html#order). 
+
+```javascript
+import { HMAC, order } from 'hmac-auth-express';
+
+app.use(HMAC('secret', { order }));
+```
+
+You will need to do the same on your client, the [`generate` method](https://connorjburton.github.io/hmac-auth-express/modules.html#generate) accepts an `options.order` parameter.
+
+```javascript
+const { generate, order } = require('hmac-auth-express');
+
+const digest = generate('secret', 'sha256', Date.now().toString(), 'POST', '/api/order', { foo: 'bar' }, { order }).digest('hex'); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
+
+const hmac = `HMAC ${Date.now().toString()}:${digest}`;
+```
+
+This exported function recursively orders your object in lexigraphic order. This should be sufficient in most cases.
+
+You can provide your own order function with your own implementation if you wish.
+
 ## Limitations
 
-This package does not support plain text, form or multi part POST bodies and is primarily intended to be used for JSON bodies. [Plain text support](https://github.com/connorjburton/hmac-auth-express/issues/61) is planned.
+This package does not support plain text, form or multi part POST bodies and is primarily intended to be used for GET requests and JSON bodies. [Plain text support](https://github.com/connorjburton/hmac-auth-express/issues/61) is planned.
 
 Be mindful of what algorithm you choose to use, this package will not stop you attempting to use an algorithm that is not supported by OpenSSL. [See the Node.js website for more information](https://nodejs.org/en/knowledge/cryptography/how-to-use-crypto-module/#hash-algorithms-that-work-with-crypto).
 
 ## Performance
 
-You can run your own benchmarks by checking out the package and running `yarn benchmark`. Below are the most recent benchmark results. Node >16 is required to run the benchmark tool.
+You can run your own benchmarks by cloning the repository and running `yarn benchmark`. Below is an example result, however please run the benchmarks on your intended target machine for accurate results. Node.js >16 is required to run the benchmark tool.
 
 | Environment  | Operations  | Duration  | ops/second  |
 |---|---|---|---|
-| `Windows 10 Pro, i5-7600K@3.80GHz`  | 1,000,000  | 24,283ms  | 41,180  |
+| `Windows 10 Pro, i5-7600K@3.80GHz`  | 1,000,000  | 752ms  | 1,329,767  |
 
 ## FAQs
 

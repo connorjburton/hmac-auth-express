@@ -10,20 +10,52 @@ import order from './order';
 export { AuthError, generate, GenerateOptions, order };
 
 export type UnknownObject = Record<string, unknown>;
+/** 
+ * Your hash secret or [a function](https://github.com/connorjburton/hmac-auth-express#dynamic-secret)
+ * 
+ * Defaults to `sha256`
+ */
 export type DynamicSecret = string | ((req: Request) => string | undefined) | ((req: Request) => Promise<string|undefined>);
 export type Order = (o: UnknownObject) => UnknownObject;
 
 export interface Options {
-    /** Defaults to `sha256` */
+    /** 
+     * The hashing algorithm
+     * 
+     * Defaults to `sha256`
+     */
     algorithm: string;
-    /** Defaults to `HMAC` */
+    /** 
+     * The start of your `options.header` should start with this
+     * 
+     * Defaults to `HMAC`
+     */
     identifier: string;
-    /** Defaults to `authorization` */
+    /** 
+     * The header the HMAC is located
+     * 
+     * Defaults to `authorization`
+     */
     header: string;
-    /** Defaults to `300` */
+    /** 
+     * The amount of time you would like a request to be valid for,
+     * in seconds (in the past).
+     * See [time based protection against replay attacks](https://github.com/connorjburton/hmac-auth-express#replay-attacks) for more information
+     * 
+     * Defaults to `300`
+     */
     maxInterval: number;
-    /** Defaults to `0` */
+    /** 
+     * The amount of time you would like a request to be valid for,
+     * in seconds (in the future).
+     * See [time based protection against replay attacks](https://github.com/connorjburton/hmac-auth-express#replay-attacks) for more information
+     * 
+     * Defaults to `0`
+     */
     minInterval: number;
+    /**
+     * Optional function to order your object before stringifying, see [How to handle non-deterministic JSON](https://github.com/connorjburton/hmac-auth-express#how-to-handle-non-deterministic-json)
+     */
     order?: Order
 }
 
