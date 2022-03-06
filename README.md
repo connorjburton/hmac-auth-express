@@ -204,7 +204,7 @@ const hmac = `HMAC ${Date.now().toString()}:${digest}`;
 
 The parameter `options.maxInterval` is the amount of time in seconds that a request is valid. We compare the unix timestamp sent in the HMAC header to the current time on the server. If the time difference is greater than `options.maxInterval` request is rejected.
 
-Similarly `options.minInterval` (introduced in `4.1.0`) is the amount of time in seconds that a request is valid for if in the future. This is a common issue for out of sync computer times (the requester time is slightly ahead of the server). If you find requests being rejected as they are from the future you may want to adjust this.
+Similarly `options.minInterval` (introduced in [4.1.0](https://github.com/connorjburton/hmac-auth-express/releases/tag/v4.1.0)) is the amount of time in seconds that a request is valid for if in the future. This is a common issue for out of sync computer times (the requester time is slightly ahead of the server). If you find requests being rejected as they are from the future you may want to adjust this.
 
 The unix timestamp sent in the header is also included in the HMAC digest, this is to prevent someone replicating a request and changing the unix timestamp to be in valid range of `options.maxInterval` or `options.minInterval`
 
