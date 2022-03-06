@@ -14,8 +14,9 @@ jobs:
     #   env:
     #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     - run: yarn typedoc src
-    - run: |
-      git config --global user.name "Connor Burton"
-      git config --global user.email "connorjburton@users.noreply.github.com"
-      git commit -am "chore(docs): update typedocs after release"
-      git push
+    - name: Publish docs
+      run: |
+        git config --global user.name "Connor Burton"
+        git config --global user.email "connorjburton@users.noreply.github.com"
+        git commit -am "chore(docs): update typedocs after release"
+        git push
