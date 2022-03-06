@@ -1,7 +1,7 @@
 import { Server } from 'http';
 import express from 'express';
 import got, { Response, NormalizedOptions } from 'got';
-import { HMAC, generate } from './../src/index';
+import { HMAC, generate } from '../../src/index';
 
 const PORT = 3000;
 const SECRET = 'secret';
