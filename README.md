@@ -210,9 +210,9 @@ The unix timestamp sent in the header is also included in the HMAC digest, this 
 
 ## How to handle non-deterministic JSON
 
-In Node.js, JSON parsing is non-deterministic, we can not guarantee the order. This poses problems when depending on that order to build HMAC digests, as a difference in order between client and server will result in different HMAC digests and fail.
+In Node.js, JSON parsing is non-deterministic. This poses problems when depending on that order to build HMAC digests, as a difference in order of the request body between client and server will result in different HMAC digests and fail.
 
-There are various solutions to this problem, with various levels of effort required. As this middleware intends to abstract away complexity in how to handle HMAC we have provided helpers and extensibility to help you solve this problem.
+There are various solutions to this problem, with various levels of effort required. As this middleware intends to abstract away complexity in how to handle HMAC we have provided helpers and extensibility to help you solve this problem. This is available in version [8.3.0](https://github.com/connorjburton/hmac-auth-express/releases/tag/v8.3.0).
 
 If you require your JSON parsing to be deterministic, you can use the [exported `order` function](https://connorjburton.github.io/hmac-auth-express/modules.html#order) and pass that as an [argument to `HMAC`](https://connorjburton.github.io/hmac-auth-express/interfaces/Options.html#order).
 
