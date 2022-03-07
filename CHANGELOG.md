@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [8.2.1](https://github.com/connorjburton/hmac-auth-express/compare/v8.2.0...v8.2.1) (2022-03-07)
+
+
+### Bug Fixes
+
+* first attempt at natively ordering body.. to be extensible before merging ([c7558d1](https://github.com/connorjburton/hmac-auth-express/commit/c7558d1d7c8d74f19b8e33128073d293a48ee94c))
+* fixing benchmark typings with new version of got ([b080c79](https://github.com/connorjburton/hmac-auth-express/commit/b080c79a71fbaf4583a88789723a240ab137b240))
+* use fast-json-stable-stringify to normalize request body, fixing out of order bug ([2e2c062](https://github.com/connorjburton/hmac-auth-express/commit/2e2c062a7f05ed864aea66d579c93e245de75222))
+
 ## [8.2.0](https://github.com/connorjburton/hmac-auth-express/compare/v8.1.0...v8.2.0) (2021-08-23)
 
 
