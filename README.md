@@ -271,7 +271,7 @@ _Why is there no default export?_ It seems to be non-trivial to export a default
 
 ```javascript
 const HMAC = require('hmac-auth-express').default;
-import HMAC from 'hmac-auth-exppress';
+import HMAC from 'hmac-auth-express';
 ```
 
 If you have a suggestion on how to export a default consistently then please [open an issue](https://github.com/connorjburton/hmac-auth-express/issues/new).
