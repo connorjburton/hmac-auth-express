@@ -19,6 +19,7 @@
         "pretest": "tsc",
         "prebenchmark": "tsc",
         "prepare": "tsc",
+        "docs": "yarn typedoc src",
         "lint:check": "yarn eslint",
         "lint:fix": "yarn eslint --fix",
         "style:check": "yarn prettier . --check",

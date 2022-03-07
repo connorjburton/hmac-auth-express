@@ -13,7 +13,7 @@ jobs:
             - run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-            - run: yarn typedoc src
+            - run: yarn docs
             - name: Publish docs
               run: |
                   git config --global user.name "Connor Burton"

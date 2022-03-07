@@ -22,9 +22,9 @@ This package provides [Express](https://expressjs.com/) middleware for [HMAC](ht
 
 `npm install hmac-auth-express`
 
-## Docs
+## Type documentation
 
-[View the documentation online here](https://connorjburton.github.io/hmac-auth-express), or run `yarn typedoc src` in the repository.
+[View the documentation online here](https://connorjburton.github.io/hmac-auth-express), or run `yarn docs` in the repository.
 
 ## Usage
 
