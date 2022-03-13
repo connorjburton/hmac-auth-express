@@ -189,14 +189,9 @@ You can also use the [exported generate function](https://connorjburton.github.i
 const { generate } = require('hmac-auth-express');
 
 const time = Date.now().toString();
-const digest = generate(
-    'secret',
-    'sha256',
-    time,
-    'POST',
-    '/api/order',
-    { foo: 'bar' }
-).digest('hex'); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
+const digest = generate('secret', 'sha256', time, 'POST', '/api/order', {
+    foo: 'bar',
+}).digest('hex'); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
 
 const hmac = `HMAC ${time}:${digest}`;
 ```

@@ -21,4 +21,4 @@ jobs:
             - run: yarn
             - run: yarn lint:check
             - run: yarn style:check
-            - run: yarn test
+            - run: yarn test --coverage
