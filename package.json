@@ -42,6 +42,17 @@
         "tabWidth": 4,
         "singleQuote": true
     },
+    "jest": {
+        "testEnvironment": "node",
+        "coverageThreshold": {
+            "global": {
+                "branches": 100,
+                "functions": 100,
+                "lines": 100,
+                "statements": 100
+            }
+        }
+    },
     "devDependencies": {
         "@commitlint/cli": "^16.2.1",
         "@commitlint/config-conventional": "^16.2.1",
