@@ -63,6 +63,36 @@ describe('unit', () => {
 
         global.Date.now = originalDateNow;
     });
+    
+    test('passes hmac with GET', async () => {
+        const originalDateNow = Date.now.bind(global.Date);
+        global.Date.now = () => TIME;
+
+        const middleware = HMAC(SECRET);
+
+        await middleware(
+            mockedRequest({
+                headers: {
+                    authorization: `HMAC ${TIME}:${generate(
+                        SECRET,
+                        undefined,
+                        TIME,
+                        'GET',
+                        URL,
+                        {}
+                    ).digest('hex')}`,
+                },
+                method: 'GET',
+                body: {}
+            }) as Request,
+            {} as Response,
+            spies.next
+        );
+
+        expect(spies.next).toHaveBeenCalledWith();
+
+        global.Date.now = originalDateNow;
+    });
 
     test('passes hamc with array as value', async () => {
         const originalDateNow = Date.now.bind(global.Date);
