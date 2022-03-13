@@ -2,13 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [8.4.0](https://github.com/connorjburton/hmac-auth-express/compare/v8.2.0...v8.4.0) (2022-03-13)
-
-
-### Features
-
-* order body ([#74](https://github.com/connorjburton/hmac-auth-express/issues/74)) ([1d0496a](https://github.com/connorjburton/hmac-auth-express/commit/1d0496a16ffd1abb72f3a6027b0c56b2a8ffae29))
-
+## [8.3.2](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.1...v8.3.2) (2022-03-13)
 
 ### Bug Fixes
 
