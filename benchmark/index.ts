@@ -6,7 +6,7 @@ import {
     performance,
 } from 'perf_hooks';
 
-import { HMAC } from './../src/index.js';
+import { HMAC } from './../src/index';
 
 interface TransformedEntry {
     operations: number;
