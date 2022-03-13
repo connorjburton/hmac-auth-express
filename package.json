@@ -1,6 +1,6 @@
 {
     "name": "hmac-auth-express",
-    "version": "8.3.0",
+    "version": "8.4.0",
     "description": "This package provides Express middleware for HMAC authentication",
     "keywords": [
         "nodejs",

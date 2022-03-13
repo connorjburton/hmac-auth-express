@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.4.0](https://github.com/connorjburton/hmac-auth-express/compare/v8.2.0...v8.4.0) (2022-03-13)
+
+
+### Features
+
+* order body ([#74](https://github.com/connorjburton/hmac-auth-express/issues/74)) ([1d0496a](https://github.com/connorjburton/hmac-auth-express/commit/1d0496a16ffd1abb72f3a6027b0c56b2a8ffae29))
+
+
+### Bug Fixes
+
+* remove a === b in order func as not a possible state ([5bca1e4](https://github.com/connorjburton/hmac-auth-express/commit/5bca1e4e78ef09407a090224ef5d434c706a12a8))
+
 ### [8.3.0](https://github.com/connorjburton/hmac-auth-express/compare/v8.2.0...v8.3.0) (2022-03-07)
 
 ### Features
