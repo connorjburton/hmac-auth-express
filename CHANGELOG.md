@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.4.0](https://github.com/connorjburton/hmac-auth-express/compare/v8.2.0...v8.4.0) (2022-03-13)
+
+
+### Features
+
+* order body ([#74](https://github.com/connorjburton/hmac-auth-express/issues/74)) ([1d0496a](https://github.com/connorjburton/hmac-auth-express/commit/1d0496a16ffd1abb72f3a6027b0c56b2a8ffae29))
+
+
+### Bug Fixes
+
+* reduce published package size from 334kb to 36kb ([e7d5801](https://github.com/connorjburton/hmac-auth-express/commit/e7d5801c4ad76c79f27461587c5122dd87f4bf2e))
+
 ## [8.3.1](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.0...v8.3.1) (2022-03-13)
 
 ### Bug Fixes
