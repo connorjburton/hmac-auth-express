@@ -42,7 +42,7 @@
         "singleQuote": true
     },
     "babel": {
-        "targetss": {
+        "targets": {
             "node": "latest"
         }
     },
