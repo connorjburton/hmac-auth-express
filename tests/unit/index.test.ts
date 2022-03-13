@@ -2,7 +2,7 @@
 import { request, Request, Response } from 'express';
 import crypto from 'crypto';
 
-import { HMAC, AuthError, generate, order } from '../../src/index.js';
+import { HMAC, AuthError, generate, order } from '../../src/index';
 
 interface MockRequest {
     headers?: {

@@ -1,4 +1,4 @@
-import order from '../../src/order.js';
+import order from '../../src/order';
 
 describe('orderJson', () => {
     test('should return json ordered alphabetically by property name', () => {
