@@ -63,7 +63,7 @@ describe('unit', () => {
 
         global.Date.now = originalDateNow;
     });
-    
+
     test('passes hmac with GET', async () => {
         const originalDateNow = Date.now.bind(global.Date);
         global.Date.now = () => TIME;
@@ -83,7 +83,7 @@ describe('unit', () => {
                     ).digest('hex')}`,
                 },
                 method: 'GET',
-                body: {}
+                body: {},
             }) as Request,
             {} as Response,
             spies.next
