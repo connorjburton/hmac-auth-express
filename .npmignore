@@ -1,0 +1,15 @@
+coverage
+.nyc_output
+docs
+src
+tests
+tsconfig.json
+yarn-error.log
+benchmark
+.prettierignore
+.husky
+.github
+.gitattributes
+.eslintrc.js
+.eslintignore
+commitlint.config.js
