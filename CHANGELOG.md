@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [8.3.4](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.3...v8.3.4) (2023-02-13)
+
 ## [8.3.2](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.1...v8.3.2) (2022-03-13)
 
 ### Bug Fixes
