@@ -1,6 +1,6 @@
 import { Server } from 'http';
 import express from 'express';
-import got, { Response, NormalizedOptions } from 'got';
+import got, { Response } from 'got';
 import { HMAC, generate } from '../../src/index';
 
 const PORT = 3000;
@@ -42,28 +42,26 @@ describe('e2e', () => {
         test('passes hmac', async () => {
             const time: number = Date.now();
             const body = { foo: 'bar' };
-            const response: Response = await got.post(
-                `http://localhost:${PORT}/test`,
-                {
-                    json: body,
-                    hooks: {
-                        beforeRequest: [
-                            (options: NormalizedOptions) => {
-                                options.headers[
-                                    'authorization'
-                                ] = `HMAC ${time.toString()}:${generate(
-                                    SECRET,
-                                    'sha256',
-                                    time,
-                                    options.method,
-                                    options.url.pathname,
-                                    options.json
-                                ).digest('hex')}`;
-                            },
-                        ],
-                    },
-                }
-            );
+            const url = new URL(`http://localhost:${PORT}/test`);
+            const response: Response = await got.post(url, {
+                json: body,
+                hooks: {
+                    beforeRequest: [
+                        (options) => {
+                            options.headers[
+                                'authorization'
+                            ] = `HMAC ${time.toString()}:${generate(
+                                SECRET,
+                                'sha256',
+                                time,
+                                options.method,
+                                url.pathname,
+                                body
+                            ).digest('hex')}`;
+                        },
+                    ],
+                },
+            });
 
             expect(response.statusCode).toBe(200);
         });
@@ -117,28 +115,26 @@ describe('e2e', () => {
         test('passes with foo url', async () => {
             const time: number = Date.now();
             const body = { foo: 'bar' };
-            const response: Response = await got.post(
-                `http://localhost:${PORT}/foo`,
-                {
-                    json: body,
-                    hooks: {
-                        beforeRequest: [
-                            (options: NormalizedOptions) => {
-                                options.headers[
-                                    'authorization'
-                                ] = `HMAC ${time.toString()}:${generate(
-                                    'firstsecret',
-                                    'sha256',
-                                    time,
-                                    options.method,
-                                    options.url.pathname,
-                                    options.json
-                                ).digest('hex')}`;
-                            },
-                        ],
-                    },
-                }
-            );
+            const url = new URL(`http://localhost:${PORT}/foo`);
+            const response: Response = await got.post(url, {
+                json: body,
+                hooks: {
+                    beforeRequest: [
+                        (options) => {
+                            options.headers[
+                                'authorization'
+                            ] = `HMAC ${time.toString()}:${generate(
+                                'firstsecret',
+                                'sha256',
+                                time,
+                                options.method,
+                                url.pathname,
+                                body
+                            ).digest('hex')}`;
+                        },
+                    ],
+                },
+            });
 
             expect(response.statusCode).toBe(200);
         });
@@ -146,28 +142,26 @@ describe('e2e', () => {
         test('passes with bar url', async () => {
             const time: number = Date.now();
             const body = { foo: 'bar' };
-            const response: Response = await got.post(
-                `http://localhost:${PORT}/bar`,
-                {
-                    json: body,
-                    hooks: {
-                        beforeRequest: [
-                            (options: NormalizedOptions) => {
-                                options.headers[
-                                    'authorization'
-                                ] = `HMAC ${time.toString()}:${generate(
-                                    'secondsecret',
-                                    'sha256',
-                                    time,
-                                    options.method,
-                                    options.url.pathname,
-                                    options.json
-                                ).digest('hex')}`;
-                            },
-                        ],
-                    },
-                }
-            );
+            const url = new URL(`http://localhost:${PORT}/bar`);
+            const response: Response = await got.post(url, {
+                json: body,
+                hooks: {
+                    beforeRequest: [
+                        (options) => {
+                            options.headers[
+                                'authorization'
+                            ] = `HMAC ${time.toString()}:${generate(
+                                'secondsecret',
+                                'sha256',
+                                time,
+                                options.method,
+                                url.pathname,
+                                body
+                            ).digest('hex')}`;
+                        },
+                    ],
+                },
+            });
 
             expect(response.statusCode).toBe(201);
         });
