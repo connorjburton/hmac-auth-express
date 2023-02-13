@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { request, Request, Response } from 'express';
 import crypto from 'crypto';
+import { jest } from '@jest/globals';
 
 import { HMAC, AuthError, generate, order } from '../../src/index';
 
@@ -22,6 +23,16 @@ const TIME = 1573504737300;
 const METHOD = 'POST';
 const URL = '/api/order';
 const BODY = { foo: 'bar' };
+
+const checkArgMessage = (
+    calledArg: unknown
+): calledArg is Record<string, undefined> => {
+    return (
+        typeof calledArg === 'object' &&
+        calledArg !== null &&
+        'message' in calledArg
+    );
+};
 
 function mockedRequest(override: MockRequest = {}): Partial<Request> {
     const req = request;
@@ -236,9 +247,12 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe("HMAC's did not match");
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe("HMAC's did not match");
+        }
 
         global.Date.now = originalDateNow;
     });
@@ -252,11 +266,14 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe(
-            'Header provided not in sent headers. Expected authorization but not found in request.headers'
-        );
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe(
+                'Header provided not in sent headers. Expected authorization but not found in request.headers'
+            );
+        }
     });
 
     test('fails hmac on no header with custom header', async () => {
@@ -268,11 +285,14 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe(
-            'Header provided not in sent headers. Expected myhmac but not found in request.headers'
-        );
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe(
+                'Header provided not in sent headers. Expected myhmac but not found in request.headers'
+            );
+        }
     });
 
     test('fails hmac on incorrect identifier', async () => {
@@ -284,11 +304,14 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe(
-            'Header did not start with correct identifier. Expected HMAC but not found in options.header'
-        );
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe(
+                'Header did not start with correct identifier. Expected HMAC but not found in options.header'
+            );
+        }
     });
 
     test('fails hmac on incorrect identifier with custom identifier', async () => {
@@ -300,11 +323,14 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe(
-            'Header did not start with correct identifier. Expected BAR but not found in options.header'
-        );
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe(
+                'Header did not start with correct identifier. Expected BAR but not found in options.header'
+            );
+        }
     });
 
     test('fails if unix timestamp not found', async () => {
@@ -318,11 +344,14 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe(
-            'Unix timestamp was not present in header'
-        );
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe(
+                'Unix timestamp was not present in header'
+            );
+        }
     });
 
     test('fails if time difference too great', async () => {
@@ -337,11 +366,14 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe(
-            'Time difference between generated and requested time is too great'
-        );
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe(
+                'Time difference between generated and requested time is too great'
+            );
+        }
 
         global.Date.now = originalDateNow;
     });
@@ -359,11 +391,14 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe(
-            'Time difference between generated and requested time is too great'
-        );
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe(
+                'Time difference between generated and requested time is too great'
+            );
+        }
 
         global.Date.now = originalDateNow;
     });
@@ -398,11 +433,14 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe(
-            'Time difference between generated and requested time is too great'
-        );
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe(
+                'Time difference between generated and requested time is too great'
+            );
+        }
 
         global.Date.now = originalDateNow;
     });
@@ -438,11 +476,16 @@ describe('unit', () => {
             spies.next
         );
 
-        const calledArg = spies.next.mock.calls.pop()[0];
+        const calledArgs = spies.next.mock.calls.pop();
+        const calledArg = calledArgs?.[0];
         expect(calledArg).toBeInstanceOf(AuthError);
-        expect(calledArg.message).toBe('HMAC digest was not present in header');
+        if (checkArgMessage(calledArg)) {
+            expect(calledArg?.['message']).toBe(
+                'HMAC digest was not present in header'
+            );
 
-        global.Date.now = originalDateNow;
+            global.Date.now = originalDateNow;
+        }
     });
 
     test('passes hmac with empty object as body', async () => {
