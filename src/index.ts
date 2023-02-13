@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import { Request, RequestHandler, NextFunction } from 'express';
 
-import stringToBuffer from './stringToBuffer';
 import validateArguments from './validateArguments';
 import AuthError from './errors';
 import generate, { GenerateOptions } from './generate';
@@ -169,7 +168,7 @@ export function HMAC(
             request.body,
             { order: mergedOpts.order }
         ).digest();
-        const sourceDigest = stringToBuffer(hashMatch[1]); // convert string to buffer
+        const sourceDigest = Buffer.from(hashMatch[1], 'hex');
 
         // use timing safe check to prevent timing attacks
         if (
