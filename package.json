@@ -60,9 +60,9 @@
     "devDependencies": {
         "@commitlint/cli": "^17.4.3",
         "@commitlint/config-conventional": "^17.4.3",
-        "@types/express": "^4.17.12",
-        "@types/jest": "^27.4.1",
-        "@types/node": "^17.0.8",
+        "@types/express": "^4.17.17",
+        "@types/jest": "^29.4.0",
+        "@types/node": "^18.13.0",
         "@typescript-eslint/eslint-plugin": "^5.52.0",
         "@typescript-eslint/parser": "^5.52.0",
         "eslint": "^8.34.0",
