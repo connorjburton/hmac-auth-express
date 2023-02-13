@@ -90,8 +90,5 @@
     },
     "peerDependencies": {
         "express": "^4.0.0"
-    },
-    "resolutions": {
-        "got/**/cacheable-request": "10.2.7"
     }
 }
