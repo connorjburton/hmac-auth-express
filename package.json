@@ -22,7 +22,7 @@
         "lint:fix": "yarn eslint --fix",
         "style:check": "yarn prettier . --check",
         "style:fix": "yarn prettier . --write",
-        "test": "jest ./tests",
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js ./tests",
         "benchmark": "ts-node ./benchmark/index.ts",
         "release": "standard-version"
     },
@@ -48,6 +48,17 @@
     "jest": {
         "testEnvironment": "node",
         "preset": "ts-jest",
+        "extensionsToTreatAsEsm": [
+            ".ts"
+        ],
+        "transform": {
+            "\\.ts?$": [
+                "ts-jest",
+                {
+                    "useESM": true
+                }
+            ]
+        },
         "coverageThreshold": {
             "global": {
                 "branches": 100,
