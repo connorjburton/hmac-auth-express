@@ -13,6 +13,9 @@
         "auth",
         "hmac"
     ],
+    "engines": {
+        "node": ">=6.6.0"
+    },
     "main": "./dist/index.js",
     "typings": "./dist",
     "scripts": {
