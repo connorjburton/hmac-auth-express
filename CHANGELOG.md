@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [8.3.4](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.3...v8.3.4) (2023-02-13)
+### [8.3.3](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.2...v8.3.3) (2023-02-13)
+
+### Refactor
+
+* Remove `stringToBuffer` and replace with `Buffer#from` ([2597079][https://github.com/connorjburton/hmac-auth-express/commit/2597079f5f0ed519fa439460454ab3a69486d353])
 
 ## [8.3.2](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.1...v8.3.2) (2022-03-13)
 
