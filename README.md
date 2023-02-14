@@ -5,11 +5,11 @@
 
 This package provides [Express](https://expressjs.com/) middleware for [HMAC](https://en.wikipedia.org/wiki/HMAC) authentication.
 
--   :star2: Zero dependencies
--   :clock1: Timing safe
--   :white_check_mark: 100% code coverage
--   :books: Support for all hash algorithms
--   :lock: Replay attacks prevention
+- :star2: Zero dependencies
+- :clock1: Timing safe
+- :white_check_mark: 100% code coverage
+- :books: Support for all hash algorithms
+- :lock: Replay attacks prevention
 
 ## Installation
 
@@ -34,13 +34,13 @@ Supports both CommonJS & ECMAScript modules.
 _CommonJS_
 
 ```javascript
-const { HMAC } = require('hmac-auth-express');
+const { HMAC } = require("hmac-auth-express");
 ```
 
 _ECMAScript_
 
 ```javascript
-import { HMAC } from 'hmac-auth-express';
+import { HMAC } from "hmac-auth-express";
 ```
 
 See [FAQs](#faqs) for design decisions around exports.
@@ -48,21 +48,21 @@ See [FAQs](#faqs) for design decisions around exports.
 #### Basic middleware registration
 
 ```javascript
-app.use('/api', HMAC('secret'));
+app.use("/api", HMAC("secret"));
 ```
 
 #### Advanced middleware registration
 
 ```javascript
 app.use(
-    '/api',
-    HMAC('secret', {
-        algorithm: 'sha512',
-        identifier: 'APP',
-        header: 'myheader',
-        maxInterval: 600,
-        minInterval: 600,
-    })
+  "/api",
+  HMAC("secret", {
+    algorithm: "sha512",
+    identifier: "APP",
+    header: "myheader",
+    maxInterval: 600,
+    minInterval: 600,
+  })
 );
 ```
 
@@ -72,7 +72,7 @@ If you are using this package to authenticate against routes with bodies, you mu
 
 ```javascript
 app.use(express.json());
-app.use('/api', HMAC('secret'));
+app.use("/api", HMAC("secret"));
 ```
 
 #### Error Handling
@@ -84,25 +84,25 @@ The middleware will pass an error to [express' error handler](http://expressjs.c
 Example:
 
 ```javascript
-const { AuthError } = require('hmac-auth-express');
+const { AuthError } = require("hmac-auth-express");
 
 // express' error handler
 app.use((error, req, res, next) => {
-    // check by error instance
-    if (error instanceof AuthError) {
-        res.status(401).json({
-            error: 'Invalid request',
-            info: error.message,
-        });
-    }
+  // check by error instance
+  if (error instanceof AuthError) {
+    res.status(401).json({
+      error: "Invalid request",
+      info: error.message,
+    });
+  }
 
-    // alternative: check by error code
-    if (error.code === 'ERR_HMAC_AUTH_INVALID') {
-        res.status(401).json({
-            error: 'Invalid request',
-            info: error.message,
-        });
-    }
+  // alternative: check by error code
+  if (error.code === "ERR_HMAC_AUTH_INVALID") {
+    res.status(401).json({
+      error: "Invalid request",
+      info: error.message,
+    });
+  }
 });
 ```
 
@@ -112,9 +112,9 @@ From [8.2.0](https://github.com/connorjburton/hmac-auth-express/releases/tag/v8.
 
 ```javascript
 const dynamicSecret = async (req) => {
-    // determine and return what the secret should be from the request object
+  // determine and return what the secret should be from the request object
 
-    return myDynamicSecret;
+  return myDynamicSecret;
 };
 
 app.use(HMAC(dynamicSecret));
@@ -165,32 +165,32 @@ Date: Wed, 13 Nov 2019 22:06:01 GMT
 ```
 
 ```javascript
-const crypto = require('crypto');
+const crypto = require("crypto");
 
-const hmac = crypto.createHmac('sha256', 'secret');
+const hmac = crypto.createHmac("sha256", "secret");
 const time = Date.now().toString();
 
 hmac.update(time);
-hmac.update('POST');
-hmac.update('/api/order');
+hmac.update("POST");
+hmac.update("/api/order");
 
-const contentHash = crypto.createHash('md5');
-contentHash.update(JSON.stringify({ foo: 'bar' }));
+const contentHash = crypto.createHash("md5");
+contentHash.update(JSON.stringify({ foo: "bar" }));
 
-hmac.update(contentHash.digest('hex'));
+hmac.update(contentHash.digest("hex"));
 
-console.log(`HMAC ${time}:${hmac.digest('hex')}`);
+console.log(`HMAC ${time}:${hmac.digest("hex")}`);
 ```
 
 You can also use the [exported generate function](https://connorjburton.github.io/hmac-auth-express/modules.html#generate) if you are using JavaScript on your client.
 
 ```javascript
-const { generate } = require('hmac-auth-express');
+const { generate } = require("hmac-auth-express");
 
 const time = Date.now().toString();
-const digest = generate('secret', 'sha256', time, 'POST', '/api/order', {
-    foo: 'bar',
-}).digest('hex'); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
+const digest = generate("secret", "sha256", time, "POST", "/api/order", {
+  foo: "bar",
+}).digest("hex"); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
 
 const hmac = `HMAC ${time}:${digest}`;
 ```
@@ -212,25 +212,25 @@ There are various solutions to this problem, with various levels of effort requi
 If you require your JSON parsing to be deterministic, you can use the [exported `order` function](https://connorjburton.github.io/hmac-auth-express/modules.html#order) and pass that as an [argument to `HMAC`](https://connorjburton.github.io/hmac-auth-express/interfaces/Options.html#order).
 
 ```javascript
-import { HMAC, order } from 'hmac-auth-express';
+import { HMAC, order } from "hmac-auth-express";
 
-app.use(HMAC('secret', { order }));
+app.use(HMAC("secret", { order }));
 ```
 
 You will need to do the same on your client, the [`generate` method](https://connorjburton.github.io/hmac-auth-express/modules.html#generate) accepts an `options.order` parameter.
 
 ```javascript
-const { generate, order } = require('hmac-auth-express');
+const { generate, order } = require("hmac-auth-express");
 
 const digest = generate(
-    'secret',
-    'sha256',
-    Date.now().toString(),
-    'POST',
-    '/api/order',
-    { foo: 'bar' },
-    { order }
-).digest('hex'); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
+  "secret",
+  "sha256",
+  Date.now().toString(),
+  "POST",
+  "/api/order",
+  { foo: "bar" },
+  { order }
+).digest("hex"); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
 
 const hmac = `HMAC ${Date.now().toString()}:${digest}`;
 ```
@@ -258,14 +258,14 @@ You can run your own benchmarks by cloning the repository and running `yarn benc
 _Why is HMAC uppercase?_ HMAC is an acronym for [hash-based message authentication code](https://en.wikipedia.org/wiki/HMAC). You can import the package as below if you need to conform to style conventions.
 
 ```javascript
-import { HMAC as hmac } from 'hmac-auth-express';
+import { HMAC as hmac } from "hmac-auth-express";
 ```
 
 _Why is there no default export?_ It seems to be non-trivial to export a default that has consistent behaviour between CommonJS & ECMAScript, the example below shows the behavioural differences when exporting a default from TypeScript.
 
 ```javascript
-const HMAC = require('hmac-auth-express').default;
-import HMAC from 'hmac-auth-express';
+const HMAC = require("hmac-auth-express").default;
+import HMAC from "hmac-auth-express";
 ```
 
 If you have a suggestion on how to export a default consistently then please [open an issue](https://github.com/connorjburton/hmac-auth-express/issues/new).
