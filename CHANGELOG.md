@@ -5,10 +5,6 @@
 
 * remove badge as reporting incorrect statuses ([a069683](https://github.com/connorjburton/hmac-auth-express/commit/a06968397f47691252bf65d246741f5faee5f28c))
 
-# Changelog
-
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
-
 ## [8.3.3](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.2...v8.3.3) (2023-02-13)
 
 ### Refactor
