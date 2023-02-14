@@ -202,6 +202,15 @@
 </tr>
 </tbody></table>
 
+<a href="#deno-support" id="deno-support" style="color: inherit; text-decoration: none;">
+  <h2>Deno support</h2>
+</a>
+<p>This package exports two main components, an Express middleware and a HMAC generator. The HMAC generator does work and is supported in Deno. The Express middleware would likely also work with Deno, however I am not aware of a Deno router that has the same function signature for middleware as Express.</p>
+<p>An example of how to use this package in Deno</p>
+<pre><code class="language-javascript"><span class="hl-5">import</span><span class="hl-1"> { </span><span class="hl-6">generate</span><span class="hl-1"> } </span><span class="hl-5">from</span><span class="hl-1"> </span><span class="hl-4">&quot;npm:hmac-auth-express@8.3.2&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">digest</span><span class="hl-1"> = </span><span class="hl-3">generate</span><span class="hl-1">(</span><br/><span class="hl-1">  </span><span class="hl-4">&quot;secret&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-4">&quot;sha256&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-6">Date</span><span class="hl-1">.</span><span class="hl-3">now</span><span class="hl-1">().</span><span class="hl-3">toString</span><span class="hl-1">(),</span><br/><span class="hl-1">  </span><span class="hl-4">&quot;POST&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-4">&quot;/api/order&quot;</span><span class="hl-1">,</span><br/><span class="hl-1">  { </span><span class="hl-6">foo:</span><span class="hl-1"> </span><span class="hl-4">&quot;bar&quot;</span><span class="hl-1"> }</span><br/><span class="hl-1">).</span><span class="hl-3">digest</span><span class="hl-1">(</span><span class="hl-4">&quot;hex&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">hmac</span><span class="hl-1"> = </span><span class="hl-4">`HMAC </span><span class="hl-0">${</span><span class="hl-6">Date</span><span class="hl-11">.</span><span class="hl-3">now</span><span class="hl-11">().</span><span class="hl-3">toString</span><span class="hl-11">()</span><span class="hl-0">}</span><span class="hl-4">:</span><span class="hl-0">${</span><span class="hl-6">digest</span><span class="hl-0">}</span><span class="hl-4">`</span><span class="hl-1">;</span><br/><span class="hl-6">console</span><span class="hl-1">.</span><span class="hl-3">log</span><span class="hl-1">(</span><span class="hl-4">`HMAC is </span><span class="hl-0">${</span><span class="hl-6">hmac</span><span class="hl-0">}</span><span class="hl-4">`</span><span class="hl-1">);</span>
+</code></pre>
+<p>In the future we may expose the core middleware logic standalone, so that you can inject this yourself in any middleware function signature of your choosing.</p>
+
 <a href="#faqs" id="faqs" style="color: inherit; text-decoration: none;">
   <h2>FAQs</h2>
 </a>
