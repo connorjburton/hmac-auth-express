@@ -253,6 +253,30 @@ You can run your own benchmarks by cloning the repository and running `yarn benc
 | ---------------------------------- | ---------- | -------- | ---------- |
 | `Windows 10 Pro, i5-7600K@3.80GHz` | 1,000,000  | 752ms    | 1,329,767  |
 
+## Deno support
+
+This package exports two main components, an Express middleware and a HMAC generator. The HMAC generator does work and is supported in Deno. The Express middleware would likely also work with Deno, however I am not aware of a Deno router that has the same function signature for middleware as Express.
+
+An example of how to use this package in Deno
+
+```javascript
+import { generate } from "npm:hmac-auth-express@8.3.2";
+
+const digest = generate(
+  "secret",
+  "sha256",
+  Date.now().toString(),
+  "POST",
+  "/api/order",
+  { foo: "bar" }
+).digest("hex");
+
+const hmac = `HMAC ${Date.now().toString()}:${digest}`;
+console.log(`HMAC is ${hmac}`);
+```
+
+In the future we may expose the core middleware logic standalone, so that you can inject this yourself in any middleware function signature of your choosing.
+
 ## FAQs
 
 _Why is HMAC uppercase?_ HMAC is an acronym for [hash-based message authentication code](https://en.wikipedia.org/wiki/HMAC). You can import the package as below if you need to conform to style conventions.
