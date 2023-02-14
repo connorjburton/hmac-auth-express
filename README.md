@@ -1,7 +1,6 @@
 # HMAC Auth Express
 
 [![npm](https://img.shields.io/npm/v/hmac-auth-express)](https://www.npmjs.com/package/hmac-auth-express)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/connorjburton/hmac-auth-express/Node.js%20CI)](https://github.com/connorjburton/hmac-auth-express/actions/workflows/ci.yml)
 [![GitHub](https://img.shields.io/github/license/connorjburton/hmac-auth-express)](https://github.com/connorjburton/hmac-auth-express/blob/master/LICENSE)
 
 This package provides [Express](https://expressjs.com/) middleware for [HMAC](https://en.wikipedia.org/wiki/HMAC) authentication.
