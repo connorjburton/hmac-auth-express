@@ -243,7 +243,7 @@ You can provide your own order function with your own implementation if you wish
 
 This package does not support plain text, form or multi part POST bodies and is primarily intended to be used for GET requests and JSON bodies. [Plain text support](https://github.com/connorjburton/hmac-auth-express/issues/61) is planned.
 
-Be mindful of what algorithm you choose to use, this package will not stop you attempting to use an algorithm that is not supported by OpenSSL. [See the Node.js website for more information](https://nodejs.org/en/knowledge/cryptography/how-to-use-crypto-module/#hash-algorithms-that-work-with-crypto).
+Be mindful of what algorithm you choose to use, this package will not stop you attempting to use an algorithm that is not supported by OpenSSL. [See the Node.js website for more information](https://nodejs.org/api/crypto.html#support-for-weak-or-compromised-algorithms).
 
 ## Performance
 
