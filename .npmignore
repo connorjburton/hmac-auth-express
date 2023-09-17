@@ -13,3 +13,4 @@ benchmark
 .eslintrc.js
 .eslintignore
 commitlint.config.js
+scripts
