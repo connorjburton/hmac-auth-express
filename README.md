@@ -1,6 +1,7 @@
 # HMAC Auth Express
 
 [![npm](https://img.shields.io/npm/v/hmac-auth-express)](https://www.npmjs.com/package/hmac-auth-express)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/connorjburton/hmac-auth-express/Node.js%20CI)](https://github.com/connorjburton/hmac-auth-express/actions/workflows/ci.yml)
 [![GitHub](https://img.shields.io/github/license/connorjburton/hmac-auth-express)](https://github.com/connorjburton/hmac-auth-express/blob/master/LICENSE)
 
 This package provides [Express](https://expressjs.com/) middleware for [HMAC](https://en.wikipedia.org/wiki/HMAC) authentication.
@@ -243,7 +244,7 @@ You can provide your own order function with your own implementation if you wish
 
 This package does not support plain text, form or multi part POST bodies and is primarily intended to be used for GET requests and JSON bodies. [Plain text support](https://github.com/connorjburton/hmac-auth-express/issues/61) is planned.
 
-Be mindful of what algorithm you choose to use, this package will not stop you attempting to use an algorithm that is not supported by OpenSSL. [See the Node.js website for more information](https://nodejs.org/api/crypto.html#support-for-weak-or-compromised-algorithms).
+Be mindful of what algorithm you choose to use, this package will not stop you attempting to use an algorithm that is not supported by OpenSSL. [See the Node.js website for more information](https://nodejs.org/en/knowledge/cryptography/how-to-use-crypto-module/#hash-algorithms-that-work-with-crypto).
 
 ## Performance
 
@@ -276,6 +277,16 @@ console.log(`HMAC is ${hmac}`);
 ```
 
 In the future we may expose the core middleware logic standalone, so that you can inject this yourself in any middleware function signature of your choosing.
+
+## Tests
+
+100% code coveage is a hard requirement of this package, enforced with automated coverage checks. The [GitHub action](https://github.com/connorjburton/hmac-auth-express/blob/master/.github/workflows/ci.yml) will use `awk` to ensure that the action fails if any coverage criteria is less than 100% for any source file.
+
+Running the tests requires Node.js v20 or higher.
+
+To run tests run `yarn test`
+
+To run tests with coverage run `yarn test --experimental-test-coverage`
 
 ## FAQs
 
