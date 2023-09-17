@@ -17,8 +17,28 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      # - run: yarn audit
-      - run: yarn
-      - run: yarn lint:check
-      - run: yarn style:check
-      - run: yarn test --coverage
+      - name: Install Dependencies
+        run: yarn
+      - name: Check Linting
+        run: yarn lint:check
+      - name: Check Coding Style
+        run: yarn style:check
+      - name: Test with Coverage
+        run: |
+          # Check coverage, if coverage is below 100% for any files exit & print a message
+          yarn test --experimental-test-coverage | grep "tests/compiled/src" | awk -F'|' '
+            BEGIN {
+              status=0;
+            }
+            {
+              for (i=2; i<NF; i++) {
+                if ($i+0 < 100) {
+                  status=1;
+                  printf "%s has less than 100%% coverage in all criterias\n", $1;
+                  exit status;
+                }
+              }
+            }
+            END {
+              exit status;
+            }'
