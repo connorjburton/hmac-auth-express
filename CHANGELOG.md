@@ -1,3 +1,14 @@
+# [9.0.0](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.5...v9.0.0) (2023-09-17)
+
+
+* fix!: order function correctly orders arrays ([172598d](https://github.com/connorjburton/hmac-auth-express/commit/172598d0916eb6db8eacaf626184d50bdc7b2b7d))
+
+
+### BREAKING CHANGES
+
+* the order function was not ordering array values
+which would lead to non-deterministic ordering if using arrays
+
 ## [8.3.5](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.4...v8.3.5) (2023-09-17)
 
 

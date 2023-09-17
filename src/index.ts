@@ -19,7 +19,7 @@ export type DynamicSecret =
   | string
   | ((req: Request) => string | undefined)
   | ((req: Request) => Promise<string | undefined>);
-export type Order = (o: UnknownObject) => UnknownObject;
+export type Order = (o: UnknownObject | unknown[]) => UnknownObject | unknown[];
 
 export interface Options {
   /**

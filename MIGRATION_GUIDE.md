@@ -1,5 +1,30 @@
 # Migration Guide
 
+## Migrating to 9.0.0 [#105](https://github.com/connorjburton/hmac-auth-express/pull/105)
+
+The [order function](https://github.com/connorjburton/hmac-auth-express/blob/master/src/order.ts) was intended to order objects in a deterministic manner, however this function did not take into account arrays and therefore was not fully deterministic.
+
+```
+{
+  foo: "bar",
+  hello: "world",
+  arr: [
+    {
+      a: "b",
+      c: "d"
+    }
+  ]
+}
+```
+
+Would not lexiographically order `a` and `b` inside the array.
+
+This only affects versions >= `8.3.0`, < `9.0.0`.
+
+This is listed as a breaking change as it is required to update your client HMAC generation to use this updated `order` function if you also use it on the server.
+
+If you do not use the provided `order` (`import { order } from 'hmac-auth-express';`) function then you are not affected.
+
 ## Migrating to 8.0.0 [#53](https://github.com/connorjburton/hmac-auth-express/pull/53)
 
 ### Default header
