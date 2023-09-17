@@ -1,10 +1,11 @@
-import crypto from "crypto";
 import { Request, RequestHandler, NextFunction } from "express";
 
-import validateArguments from "./validateArguments";
-import AuthError from "./errors";
-import generate, { GenerateOptions } from "./generate";
-import order from "./order";
+import validateArguments from "./validateArguments.js";
+import AuthError from "./errors.js";
+import generate, { GenerateOptions } from "./generate.js";
+import order from "./order.js";
+
+const crypto = await import("node:crypto");
 
 export { AuthError, generate, GenerateOptions, order };
 

@@ -1,6 +1,6 @@
-import crypto from "crypto";
+import { Options, DynamicSecret } from "./index.js";
 
-import { Options, DynamicSecret } from "./index";
+const crypto = await import("node:crypto");
 
 export default function (secret: DynamicSecret, options: Options): void {
   if (!secret || (typeof secret !== "string" && typeof secret !== "function")) {
