@@ -23,5 +23,5 @@ node_modules/
 # dist
 /dist
 
-benchmark/*.js
 tests/compiled
+benchmark/compiled
