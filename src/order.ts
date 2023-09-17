@@ -1,4 +1,4 @@
-import { UnknownObject } from "./index";
+import { UnknownObject } from "./index.js";
 
 export default function order(o: UnknownObject): UnknownObject {
   if (typeof o !== "object" || o === null || Array.isArray(o)) {

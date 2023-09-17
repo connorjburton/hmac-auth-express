@@ -1,5 +1,5 @@
 import { createHash, createHmac, Hmac } from "crypto";
-import { Order, UnknownObject, defaults } from "./index";
+import { Order, UnknownObject, defaults } from "./index.js";
 
 export interface GenerateOptions {
   order?: Order;
