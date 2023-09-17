@@ -1,7 +1,10 @@
 import { Server } from "http";
 import express from "express";
+import { describe, it, before, after } from "node:test";
+import { strict as assert } from "node:assert";
 import got, { Response } from "got";
-import { HMAC, generate } from "../../src/index";
+
+import { HMAC, generate } from "../../src/index.js";
 
 const PORT = 3000;
 const SECRET = "secret";
@@ -11,7 +14,7 @@ describe("e2e", () => {
     let app: express.Application | undefined;
     let connection: Server;
 
-    beforeAll((done: jest.DoneCallback) => {
+    before((_, done) => {
       app = express();
       app.use(express.json());
       app.use(HMAC(SECRET));
@@ -33,15 +36,15 @@ describe("e2e", () => {
       connection = app.listen(PORT, done);
     });
 
-    afterAll(() => {
+    after(() => {
       app = undefined;
       connection.close();
     });
 
-    test("passes hmac", async () => {
+    it("passes hmac", async () => {
       const time: number = Date.now();
       const body = { foo: "bar" };
-      const url = new URL(`http://localhost:${PORT}/test`);
+      const url = new URL(`http://127.0.0.1:${PORT}/test`);
       const response: Response = await got.post(url, {
         json: body,
         hooks: {
@@ -62,7 +65,7 @@ describe("e2e", () => {
         },
       });
 
-      expect(response.statusCode).toBe(200);
+      assert.strictEqual(response.statusCode, 200);
     });
   });
 
@@ -70,7 +73,7 @@ describe("e2e", () => {
     let app: express.Application | undefined;
     let connection: Server;
 
-    beforeAll((done: jest.DoneCallback) => {
+    before((_, done) => {
       const dynamicSecret = (req: express.Request) => {
         if (req.path.includes("foo")) {
           return "firstsecret";
@@ -104,12 +107,12 @@ describe("e2e", () => {
       connection = app.listen(PORT, done);
     });
 
-    afterAll(() => {
+    after(() => {
       app = undefined;
       connection.close();
     });
 
-    test("passes with foo url", async () => {
+    it("passes with foo url", async () => {
       const time: number = Date.now();
       const body = { foo: "bar" };
       const url = new URL(`http://localhost:${PORT}/foo`);
@@ -133,10 +136,10 @@ describe("e2e", () => {
         },
       });
 
-      expect(response.statusCode).toBe(200);
+      assert.strictEqual(response.statusCode, 200);
     });
 
-    test("passes with bar url", async () => {
+    it("passes with bar url", async () => {
       const time: number = Date.now();
       const body = { foo: "bar" };
       const url = new URL(`http://localhost:${PORT}/bar`);
@@ -160,7 +163,7 @@ describe("e2e", () => {
         },
       });
 
-      expect(response.statusCode).toBe(201);
+      assert.strictEqual(response.statusCode, 201);
     });
   });
 });
