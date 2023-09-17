@@ -23,15 +23,15 @@ describe("e2e", () => {
           _: Record<string, unknown>,
           _req: express.Request,
           res: express.Response,
-          next: express.NextFunction
+          next: express.NextFunction,
         ): void => {
           res.sendStatus(401);
           next();
-        }
+        },
       );
       app.post(
         "/test",
-        (_, res: express.Response): express.Response => res.sendStatus(200)
+        (_, res: express.Response): express.Response => res.sendStatus(200),
       );
       connection = app.listen(PORT, done);
     });
@@ -58,7 +58,7 @@ describe("e2e", () => {
                 time,
                 options.method,
                 url.pathname,
-                body
+                body,
               ).digest("hex")}`;
             },
           ],
@@ -90,19 +90,19 @@ describe("e2e", () => {
           _: Record<string, unknown>,
           _req: express.Request,
           res: express.Response,
-          next: express.NextFunction
+          next: express.NextFunction,
         ): void => {
           res.sendStatus(401);
           next();
-        }
+        },
       );
       app.post(
         "/foo",
-        (_, res: express.Response): express.Response => res.sendStatus(200)
+        (_, res: express.Response): express.Response => res.sendStatus(200),
       );
       app.post(
         "/bar",
-        (_, res: express.Response): express.Response => res.sendStatus(201)
+        (_, res: express.Response): express.Response => res.sendStatus(201),
       );
       connection = app.listen(PORT, done);
     });
@@ -129,7 +129,7 @@ describe("e2e", () => {
                 time,
                 options.method,
                 url.pathname,
-                body
+                body,
               ).digest("hex")}`;
             },
           ],
@@ -156,7 +156,7 @@ describe("e2e", () => {
                 time,
                 options.method,
                 url.pathname,
-                body
+                body,
               ).digest("hex")}`;
             },
           ],

@@ -22,7 +22,7 @@ const URL = "/api/order";
 const BODY = { foo: "bar" };
 
 const checkArgMessage = (
-  calledArg: unknown
+  calledArg: unknown,
 ): calledArg is Record<string, undefined> => {
   return (
     typeof calledArg === "object" &&
@@ -82,14 +82,14 @@ describe("unit", () => {
             TIME,
             "GET",
             URL,
-            {}
+            {},
           ).digest("hex")}`,
         },
         method: "GET",
         body: {},
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -115,13 +115,13 @@ describe("unit", () => {
             TIME,
             METHOD,
             URL,
-            body
+            body,
           ).digest("hex")}`,
         },
         body,
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -148,12 +148,12 @@ describe("unit", () => {
                   TIME,
                   METHOD,
                   URL,
-                  BODY
+                  BODY,
                 ).digest("hex")}`,
               },
             }) as Request,
             {} as Response,
-            spies.next
+            spies.next,
           );
 
           assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -191,12 +191,12 @@ describe("unit", () => {
             TIME,
             METHOD,
             URL,
-            BODY
+            BODY,
           ).digest("hex")}`,
         },
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -219,13 +219,13 @@ describe("unit", () => {
             undefined,
             TIME,
             METHOD,
-            URL
+            URL,
           ).digest("hex")}`,
         },
         body: undefined,
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -260,7 +260,7 @@ describe("unit", () => {
     await middleware(
       mockedRequest({ headers: {} }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     const calledArgs = spies.next.mock.calls.pop();
@@ -271,7 +271,7 @@ describe("unit", () => {
     if (checkArgMessage(calledArg)) {
       assert.strictEqual(
         calledArg?.["message"],
-        "Header provided not in sent headers. Expected authorization but not found in request.headers"
+        "Header provided not in sent headers. Expected authorization but not found in request.headers",
       );
     }
   });
@@ -282,7 +282,7 @@ describe("unit", () => {
     await middleware(
       mockedRequest({ headers: {} }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     const calledArgs = spies.next.mock.calls.pop();
@@ -293,7 +293,7 @@ describe("unit", () => {
     if (checkArgMessage(calledArg)) {
       assert.strictEqual(
         calledArg?.["message"],
-        "Header provided not in sent headers. Expected myhmac but not found in request.headers"
+        "Header provided not in sent headers. Expected myhmac but not found in request.headers",
       );
     }
   });
@@ -304,7 +304,7 @@ describe("unit", () => {
     await middleware(
       mockedRequest({ headers: { authorization: "FOO" } }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     const calledArgs = spies.next.mock.calls.pop();
@@ -315,7 +315,7 @@ describe("unit", () => {
     if (checkArgMessage(calledArg)) {
       assert.strictEqual(
         calledArg?.["message"],
-        "Header did not start with correct identifier. Expected HMAC but not found in options.header"
+        "Header did not start with correct identifier. Expected HMAC but not found in options.header",
       );
     }
   });
@@ -326,7 +326,7 @@ describe("unit", () => {
     await middleware(
       mockedRequest({ headers: { authorization: "FOO" } }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     const calledArgs = spies.next.mock.calls.pop();
@@ -337,7 +337,7 @@ describe("unit", () => {
     if (checkArgMessage(calledArg)) {
       assert.strictEqual(
         calledArg?.["message"],
-        "Header did not start with correct identifier. Expected BAR but not found in options.header"
+        "Header did not start with correct identifier. Expected BAR but not found in options.header",
       );
     }
   });
@@ -350,7 +350,7 @@ describe("unit", () => {
         headers: { authorization: "HMAC :a2bc3" },
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     const calledArgs = spies.next.mock.calls.pop();
@@ -361,7 +361,7 @@ describe("unit", () => {
     if (checkArgMessage(calledArg)) {
       assert.strictEqual(
         calledArg?.["message"],
-        "Unix timestamp was not present in header"
+        "Unix timestamp was not present in header",
       );
     }
   });
@@ -382,7 +382,7 @@ describe("unit", () => {
     if (checkArgMessage(calledArg)) {
       assert.strictEqual(
         calledArg?.["message"],
-        "Time difference between generated and requested time is too great"
+        "Time difference between generated and requested time is too great",
       );
     }
 
@@ -406,7 +406,7 @@ describe("unit", () => {
     if (checkArgMessage(calledArg)) {
       assert.strictEqual(
         calledArg?.["message"],
-        "Time difference between generated and requested time is too great"
+        "Time difference between generated and requested time is too great",
       );
     }
 
@@ -443,7 +443,7 @@ describe("unit", () => {
     if (checkArgMessage(calledArg)) {
       assert.strictEqual(
         calledArg?.["message"],
-        "Time difference between generated and requested time is too great"
+        "Time difference between generated and requested time is too great",
       );
     }
 
@@ -474,7 +474,7 @@ describe("unit", () => {
         headers: { authorization: `HMAC ${TIME}:` },
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     const calledArgs = spies.next.mock.calls.pop();
@@ -485,7 +485,7 @@ describe("unit", () => {
     if (checkArgMessage(calledArg)) {
       assert.strictEqual(
         calledArg?.["message"],
-        "HMAC digest was not present in header"
+        "HMAC digest was not present in header",
       );
 
       global.Date.now = originalDateNow;
@@ -507,13 +507,13 @@ describe("unit", () => {
             TIME,
             METHOD,
             URL,
-            {}
+            {},
           ).digest("hex")}`,
         },
         body: {},
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -538,13 +538,13 @@ describe("unit", () => {
             TIME,
             METHOD,
             URL,
-            body
+            body,
           ).digest("hex")}`,
         },
         body,
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -569,13 +569,13 @@ describe("unit", () => {
             TIME,
             METHOD,
             URL,
-            body
+            body,
           ).digest("hex")}`,
         },
         body,
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -600,13 +600,13 @@ describe("unit", () => {
             TIME,
             METHOD,
             URL,
-            body
+            body,
           ).digest("hex")}`,
         },
         body,
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -631,13 +631,13 @@ describe("unit", () => {
             TIME,
             METHOD,
             URL,
-            body
+            body,
           ).digest("hex")}`,
         },
         body,
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -666,12 +666,12 @@ describe("unit", () => {
             TIME,
             METHOD,
             URL,
-            BODY
+            BODY,
           ).digest("hex")}`,
         },
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -690,8 +690,8 @@ describe("unit", () => {
     assert.deepStrictEqual(
       spies.next.mock.calls[0].arguments[0],
       new AuthError(
-        "Invalid secret. Expected non-empty string but got 'undefined' (type: undefined)"
-      )
+        "Invalid secret. Expected non-empty string but got 'undefined' (type: undefined)",
+      ),
     );
 
     global.Date.now = originalDateNow;
@@ -709,8 +709,8 @@ describe("unit", () => {
     assert.deepStrictEqual(
       spies.next.mock.calls[0].arguments[0],
       new AuthError(
-        "Invalid secret. Expected non-empty string but got '1,2' (type: object)"
-      )
+        "Invalid secret. Expected non-empty string but got '1,2' (type: object)",
+      ),
     );
 
     global.Date.now = originalDateNow;
@@ -727,8 +727,8 @@ describe("unit", () => {
     assert.deepStrictEqual(
       spies.next.mock.calls[0].arguments[0],
       new AuthError(
-        "Invalid secret. Expected non-empty string but got '' (type: string)"
-      )
+        "Invalid secret. Expected non-empty string but got '' (type: string)",
+      ),
     );
 
     global.Date.now = originalDateNow;
@@ -751,13 +751,13 @@ describe("unit", () => {
             TIME,
             METHOD,
             URL,
-            { baz: "buzz", foo: "bar" }
+            { baz: "buzz", foo: "bar" },
           ).digest("hex")}`,
         },
         body,
       }) as Request,
       {} as Response,
-      spies.next
+      spies.next,
     );
 
     assert.strictEqual(spies.next.mock.calls.length, 1);
@@ -771,16 +771,16 @@ describe("unit", () => {
     assert.throws(
       () => HMAC(""),
       new TypeError(
-        `Invalid value provided for property secret. Expected non-empty string or function but got '' (type: string)`
-      )
+        `Invalid value provided for property secret. Expected non-empty string or function but got '' (type: string)`,
+      ),
     );
 
     assert.throws(
       // @ts-ignore
       () => HMAC(23),
       new TypeError(
-        `Invalid value provided for property secret. Expected non-empty string or function but got '23' (type: number)`
-      )
+        `Invalid value provided for property secret. Expected non-empty string or function but got '23' (type: number)`,
+      ),
     );
   });
 
@@ -788,8 +788,8 @@ describe("unit", () => {
     assert.throws(
       () => HMAC(SECRET, { algorithm: "sha111" }),
       new TypeError(
-        `Invalid value provided for property options.algorithm. Expected value from crypto.getHashes() but got sha111 (type: string)`
-      )
+        `Invalid value provided for property options.algorithm. Expected value from crypto.getHashes() but got sha111 (type: string)`,
+      ),
     );
   });
 
@@ -798,8 +798,8 @@ describe("unit", () => {
       // @ts-ignore
       () => HMAC(SECRET, { identifier: 123 }),
       new TypeError(
-        `Invalid value provided for property options.identifier. Expected non-empty string but got '123' (type: number)`
-      )
+        `Invalid value provided for property options.identifier. Expected non-empty string but got '123' (type: number)`,
+      ),
     );
   });
 
@@ -808,8 +808,8 @@ describe("unit", () => {
       // @ts-ignore
       () => HMAC(SECRET, { header: 123 }),
       new TypeError(
-        `Invalid value provided for property options.header. Expected non-empty string but got '123' (type: number)`
-      )
+        `Invalid value provided for property options.header. Expected non-empty string but got '123' (type: number)`,
+      ),
     );
   });
 
@@ -818,8 +818,8 @@ describe("unit", () => {
       // @ts-ignore
       () => HMAC(SECRET, { maxInterval: "abc" }),
       new TypeError(
-        `Invalid value provided for property options.maxInterval. Expected number but got 'abc' (type: string)`
-      )
+        `Invalid value provided for property options.maxInterval. Expected number but got 'abc' (type: string)`,
+      ),
     );
   });
 
@@ -828,8 +828,8 @@ describe("unit", () => {
       // @ts-ignore
       () => HMAC(SECRET, { minInterval: "abc" }),
       new TypeError(
-        `Invalid value provided for optional property options.minInterval. Expected positive number but got 'abc' (type: string)`
-      )
+        `Invalid value provided for optional property options.minInterval. Expected positive number but got 'abc' (type: string)`,
+      ),
     );
   });
 
@@ -837,8 +837,8 @@ describe("unit", () => {
     assert.throws(
       () => HMAC(SECRET, { minInterval: -1 }),
       new TypeError(
-        `Invalid value provided for optional property options.minInterval. Expected positive number but got '-1' (type: number)`
-      )
+        `Invalid value provided for optional property options.minInterval. Expected positive number but got '-1' (type: number)`,
+      ),
     );
   });
 });

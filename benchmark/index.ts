@@ -38,8 +38,8 @@ function transformObserverEntry(entry: PerformanceEntry): TransformedEntry {
   const observer: PerformanceObserver = new PerformanceObserver(
     (items: PerformanceObserverEntryList): void =>
       console.log(
-        items.getEntries().map((entry) => transformObserverEntry(entry))
-      )
+        items.getEntries().map((entry) => transformObserverEntry(entry)),
+      ),
   );
   const middleware = HMAC("secret");
   observer.observe({ type: "measure" });

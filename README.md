@@ -62,7 +62,7 @@ app.use(
     header: "myheader",
     maxInterval: 600,
     minInterval: 600,
-  })
+  }),
 );
 ```
 
@@ -229,7 +229,7 @@ const digest = generate(
   "POST",
   "/api/order",
   { foo: "bar" },
-  { order }
+  { order },
 ).digest("hex"); // 76251c6323fbf6355f23816a4c2e12edfd10672517104763ab1b10f078277f86
 
 const hmac = `HMAC ${Date.now().toString()}:${digest}`;
@@ -268,7 +268,7 @@ const digest = generate(
   Date.now().toString(),
   "POST",
   "/api/order",
-  { foo: "bar" }
+  { foo: "bar" },
 ).digest("hex");
 
 const hmac = `HMAC ${Date.now().toString()}:${digest}`;

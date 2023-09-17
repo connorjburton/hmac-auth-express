@@ -72,14 +72,14 @@ export const defaults: Options = {
 
 async function determineSecret(
   secret: DynamicSecret,
-  req: Request
+  req: Request,
 ): Promise<string | undefined> {
   return typeof secret === "function" ? await secret(req) : secret;
 }
 
 export function HMAC(
   secret: DynamicSecret,
-  options: Partial<Options> = {}
+  options: Partial<Options> = {},
 ): RequestHandler {
   const mergedOpts: Options = { ...defaults, ...options };
 
@@ -88,7 +88,7 @@ export function HMAC(
   return async function (
     request: Request,
     _,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     // we have to create a scoped secret per request, if we were to reassign the original `secret` variable
     // the next request that comes in will no longer be the secret function
@@ -97,8 +97,8 @@ export function HMAC(
     if (typeof scopedSecret !== "string" || scopedSecret.length === 0) {
       return next(
         new AuthError(
-          `Invalid secret. Expected non-empty string but got '${scopedSecret}' (type: ${typeof scopedSecret})`
-        )
+          `Invalid secret. Expected non-empty string but got '${scopedSecret}' (type: ${typeof scopedSecret})`,
+        ),
       );
     }
 
@@ -106,8 +106,8 @@ export function HMAC(
     if (typeof header !== "string") {
       return next(
         new AuthError(
-          `Header provided not in sent headers. Expected ${mergedOpts.header} but not found in request.headers`
-        )
+          `Header provided not in sent headers. Expected ${mergedOpts.header} but not found in request.headers`,
+        ),
       );
     }
 
@@ -117,8 +117,8 @@ export function HMAC(
     ) {
       return next(
         new AuthError(
-          `Header did not start with correct identifier. Expected ${mergedOpts.identifier} but not found in options.header`
-        )
+          `Header did not start with correct identifier. Expected ${mergedOpts.identifier} but not found in options.header`,
+        ),
       );
     }
 
@@ -142,8 +142,8 @@ export function HMAC(
     ) {
       return next(
         new AuthError(
-          "Time difference between generated and requested time is too great"
-        )
+          "Time difference between generated and requested time is too great",
+        ),
       );
     }
 
@@ -165,7 +165,7 @@ export function HMAC(
       request.method,
       request.originalUrl,
       request.body,
-      { order: mergedOpts.order }
+      { order: mergedOpts.order },
     ).digest();
     const sourceDigest = Buffer.from(hashMatch[1], "hex");
 
