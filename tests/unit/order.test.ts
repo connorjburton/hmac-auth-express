@@ -97,7 +97,7 @@ describe("orderJson", () => {
     assert.deepEqual(Object.keys(ordered), Object.keys(output));
     assert.deepEqual(
       Object.keys(ordered.friends[0] as {}),
-      Object.keys(output.friends[0] as {})
+      Object.keys(output.friends[0] as {}),
     );
   });
 });

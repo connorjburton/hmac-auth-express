@@ -1,7 +1,7 @@
 import { UnknownObject } from "./index.js";
 
 export default function order(
-  o: UnknownObject | unknown[]
+  o: UnknownObject | unknown[],
 ): UnknownObject | unknown[] {
   if (typeof o !== "object" || o === null) {
     return o;

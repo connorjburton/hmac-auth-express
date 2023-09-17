@@ -7,7 +7,7 @@ export interface GenerateOptions {
 
 function transformBody(
   body: UnknownObject | unknown[],
-  order?: Order
+  order?: Order,
 ): UnknownObject | unknown[] {
   // we never want to order an array as it is deterministic in JSON
   if (Array.isArray(body) || typeof order !== "function") {
@@ -31,7 +31,7 @@ export default function generate(
   method: string,
   url: string,
   body?: UnknownObject | unknown[],
-  options?: GenerateOptions
+  options?: GenerateOptions,
 ): Hmac {
   const hmac = createHmac(algorithm, secret);
 

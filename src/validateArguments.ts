@@ -5,7 +5,7 @@ const crypto = await import("node:crypto");
 export default function (secret: DynamicSecret, options: Options): void {
   if (!secret || (typeof secret !== "string" && typeof secret !== "function")) {
     throw new TypeError(
-      `Invalid value provided for property secret. Expected non-empty string or function but got '${secret}' (type: ${typeof secret})`
+      `Invalid value provided for property secret. Expected non-empty string or function but got '${secret}' (type: ${typeof secret})`,
     );
   }
 
@@ -16,7 +16,7 @@ export default function (secret: DynamicSecret, options: Options): void {
     throw new TypeError(
       `Invalid value provided for property options.algorithm. Expected value from crypto.getHashes() but got ${
         options.algorithm
-      } (type: ${typeof options.algorithm})`
+      } (type: ${typeof options.algorithm})`,
     );
   }
 
@@ -24,7 +24,7 @@ export default function (secret: DynamicSecret, options: Options): void {
     throw new TypeError(
       `Invalid value provided for property options.identifier. Expected non-empty string but got '${
         options.identifier
-      }' (type: ${typeof options.identifier})`
+      }' (type: ${typeof options.identifier})`,
     );
   }
 
@@ -32,7 +32,7 @@ export default function (secret: DynamicSecret, options: Options): void {
     throw new TypeError(
       `Invalid value provided for property options.header. Expected non-empty string but got '${
         options.header
-      }' (type: ${typeof options.header})`
+      }' (type: ${typeof options.header})`,
     );
   }
 
@@ -44,7 +44,7 @@ export default function (secret: DynamicSecret, options: Options): void {
     throw new TypeError(
       `Invalid value provided for property options.maxInterval. Expected number but got '${
         options.maxInterval
-      }' (type: ${typeof options.maxInterval})`
+      }' (type: ${typeof options.maxInterval})`,
     );
   }
 
@@ -56,7 +56,7 @@ export default function (secret: DynamicSecret, options: Options): void {
     throw new TypeError(
       `Invalid value provided for optional property options.minInterval. Expected positive number but got '${
         options.minInterval
-      }' (type: ${typeof options.minInterval})`
+      }' (type: ${typeof options.minInterval})`,
     );
   }
 }
