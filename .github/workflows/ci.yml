@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
-        run: npm
+        run: npm ci
       - name: Check Linting
         run: npm run lint:check
       - name: Check Coding Style
