@@ -26,7 +26,11 @@ jobs:
       - name: Test with Coverage
         run: |
           # Check coverage, if coverage is below 100% for any files exit & print a message
-          yarn test --experimental-test-coverage | grep "tests/compiled/src" | awk -F'|' '
+          yarn test --experimental-test-coverage > test-output.txt
+
+          cat test-output.txt
+
+          grep "tests/compiled/src" test-output.txt | awk -F'|' '
             BEGIN {
               status=0;
             }
