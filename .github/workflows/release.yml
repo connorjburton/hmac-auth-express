@@ -15,13 +15,13 @@ jobs:
         with:
           node-version: "lts/*"
       - name: Install dependencies
-        run: yarn
+        run: npm ci
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
-      - run: yarn docs
+      - run: npm run docs
       - name: Publish docs
         run: |
           git config --global user.name "Connor Burton"

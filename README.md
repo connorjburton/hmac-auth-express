@@ -13,17 +13,17 @@ This package provides [Express](https://expressjs.com/) middleware for [HMAC](ht
 
 ## Installation
 
-**yarn**
-
-`yarn add hmac-auth-express`
-
 **npm**
 
 `npm install hmac-auth-express`
 
+**yarn**
+
+`yarn add hmac-auth-express`
+
 ## Type documentation
 
-[View the documentation online here](https://connorjburton.github.io/hmac-auth-express), or run `yarn docs` in the repository.
+[View the documentation online here](https://connorjburton.github.io/hmac-auth-express), or run `npm run docs` in the repository.
 
 ## Usage
 
@@ -247,7 +247,7 @@ Be mindful of what algorithm you choose to use, this package will not stop you a
 
 ## Performance
 
-You can run your own benchmarks by cloning the repository and running `yarn benchmark`. Below is an example result, however please run the benchmarks on your intended target machine for accurate results. Node.js >16 is required to run the benchmark tool.
+You can run your own benchmarks by cloning the repository and running `npm run benchmark`. Below is an example result, however please run the benchmarks on your intended target machine for accurate results. Node.js >16 is required to run the benchmark tool.
 
 | Environment                        | Operations | Duration | ops/second |
 | ---------------------------------- | ---------- | -------- | ---------- |
@@ -283,9 +283,9 @@ In the future we may expose the core middleware logic standalone, so that you ca
 
 Running the tests requires Node.js v20 or higher.
 
-To run tests run `yarn test`
+To run tests run `npm run test`
 
-To run tests with coverage run `yarn test --experimental-test-coverage`
+To run tests with coverage run `npm run test -- --experimental-test-coverage`
 
 ## FAQs
 

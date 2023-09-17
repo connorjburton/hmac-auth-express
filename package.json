@@ -21,11 +21,11 @@
   "typings": "./dist",
   "scripts": {
     "prepack": "tsc",
-    "docs": "yarn typedoc src",
-    "lint:check": "yarn eslint",
-    "lint:fix": "yarn eslint --fix",
-    "style:check": "yarn prettier . --check",
-    "style:fix": "yarn prettier . --write",
+    "docs": "typedoc src",
+    "lint:check": "eslint",
+    "lint:fix": "eslint --fix",
+    "style:check": "prettier . --check",
+    "style:fix": "prettier . --write",
     "test": "./scripts/run-tests.sh",
     "benchmark": "ts-node ./benchmark/index.ts"
   },
