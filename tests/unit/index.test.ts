@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { request, Request, Response } from "express";
-import crypto from "crypto";
-import { jest } from "@jest/globals";
+import { describe, it, mock, afterEach } from "node:test";
+import { strict as assert } from "node:assert";
+const crypto = await import("node:crypto");
 
-import { HMAC, AuthError, generate, order } from "../../src/index";
+import { HMAC, AuthError, generate, order } from "../../src/index.js";
 
 interface MockRequest {
   headers?: {
@@ -12,10 +13,6 @@ interface MockRequest {
   method?: "GET" | "POST";
   originalUrl?: string;
   body?: Record<string, unknown> | unknown[];
-}
-
-interface Spies {
-  next: jest.Mock;
 }
 
 const SECRET = "secret";
@@ -50,15 +47,13 @@ function mockedRequest(override: MockRequest = {}): Partial<Request> {
 }
 
 describe("unit", () => {
-  const spies: Spies = {
-    next: jest.fn(),
+  const spies = {
+    next: mock.fn(),
   };
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  afterEach(() => spies.next.mock.resetCalls());
 
-  test("passes hmac", async () => {
+  it("passes hmac", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -66,12 +61,13 @@ describe("unit", () => {
 
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
+    assert.deepStrictEqual(spies.next.mock.calls[0].arguments, []);
 
     global.Date.now = originalDateNow;
   });
 
-  test("passes hmac with GET", async () => {
+  it("passes hmac with GET", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -96,12 +92,13 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
+    assert.deepStrictEqual(spies.next.mock.calls[0].arguments, []);
 
     global.Date.now = originalDateNow;
   });
 
-  test("passes hamc with array as value", async () => {
+  it("passes hamc with array as value", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -127,55 +124,59 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
+    assert.deepStrictEqual(spies.next.mock.calls[0].arguments, []);
 
     global.Date.now = originalDateNow;
   });
 
-  test("passes with every available algorithm", async () => {
+  it("passes with every available algorithm", async (t) => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
     for (const hash of crypto.getHashes()) {
-      try {
-        const middleware = HMAC(SECRET, { algorithm: hash });
+      await t.test(hash, async () => {
+        try {
+          const middleware = HMAC(SECRET, { algorithm: hash });
 
-        await middleware(
-          mockedRequest({
-            headers: {
-              authorization: `HMAC ${TIME}:${generate(
-                SECRET,
-                hash,
-                TIME,
-                METHOD,
-                URL,
-                BODY
-              ).digest("hex")}`,
-            },
-          }) as Request,
-          {} as Response,
-          spies.next
-        );
+          await middleware(
+            mockedRequest({
+              headers: {
+                authorization: `HMAC ${TIME}:${generate(
+                  SECRET,
+                  hash,
+                  TIME,
+                  METHOD,
+                  URL,
+                  BODY
+                ).digest("hex")}`,
+              },
+            }) as Request,
+            {} as Response,
+            spies.next
+          );
 
-        expect(spies.next).toHaveBeenCalledWith();
-        jest.clearAllMocks();
-      } catch (e) {
-        // this error is for algos that are not supported by openssl
-        // this can change per platform so we can not have a fixed exclusion list
-        // instead we simply check if we get the error indicating it's not supported and skip over it
-        if (
-          e instanceof Error &&
-          e?.message !== "error:00000000:lib(0):func(0):reason(0)"
-        ) {
-          throw e;
+          assert.strictEqual(spies.next.mock.calls.length, 1);
+          assert.deepStrictEqual(spies.next.mock.calls[0].arguments, []);
+        } catch (e) {
+          // this error is for algos that are not supported by openssl
+          // this can change per platform so we can not have a fixed exclusion list
+          // instead we simply check if we get the error indicating it's not supported and skip over it
+          if (
+            e instanceof Error &&
+            e?.message !== "error:00000000:lib(0):func(0):reason(0)" &&
+            e?.message !== "error:00000000:lib(0)::reason(0)"
+          ) {
+            throw e;
+          }
         }
-      }
+      });
     }
 
     global.Date.now = originalDateNow;
   });
 
-  test("passes hmac with different algorithm", async () => {
+  it("passes hmac with different algorithm", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -198,12 +199,13 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
+    assert.deepStrictEqual(spies.next.mock.calls[0].arguments, []);
 
     global.Date.now = originalDateNow;
   });
 
-  test("passes hmac without body", async () => {
+  it("passes hmac without body", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -226,12 +228,13 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
+    assert.deepStrictEqual(spies.next.mock.calls[0].arguments, []);
 
     global.Date.now = originalDateNow;
   });
 
-  test("fails hmac not matching", async () => {
+  it("fails hmac not matching", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -240,16 +243,18 @@ describe("unit", () => {
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe("HMAC's did not match");
+      assert.strictEqual(calledArg?.["message"], "HMAC's did not match");
     }
 
     global.Date.now = originalDateNow;
   });
 
-  test("fails hmac on no header", async () => {
+  it("fails hmac on no header", async () => {
     const middleware = HMAC(SECRET);
 
     await middleware(
@@ -259,16 +264,19 @@ describe("unit", () => {
     );
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe(
+      assert.strictEqual(
+        calledArg?.["message"],
         "Header provided not in sent headers. Expected authorization but not found in request.headers"
       );
     }
   });
 
-  test("fails hmac on no header with custom header", async () => {
+  it("fails hmac on no header with custom header", async () => {
     const middleware = HMAC(SECRET, { header: "myhmac" });
 
     await middleware(
@@ -278,16 +286,19 @@ describe("unit", () => {
     );
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe(
+      assert.strictEqual(
+        calledArg?.["message"],
         "Header provided not in sent headers. Expected myhmac but not found in request.headers"
       );
     }
   });
 
-  test("fails hmac on incorrect identifier", async () => {
+  it("fails hmac on incorrect identifier", async () => {
     const middleware = HMAC(SECRET);
 
     await middleware(
@@ -297,16 +308,19 @@ describe("unit", () => {
     );
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe(
+      assert.strictEqual(
+        calledArg?.["message"],
         "Header did not start with correct identifier. Expected HMAC but not found in options.header"
       );
     }
   });
 
-  test("fails hmac on incorrect identifier with custom identifier", async () => {
+  it("fails hmac on incorrect identifier with custom identifier", async () => {
     const middleware = HMAC(SECRET, { identifier: "BAR" });
 
     await middleware(
@@ -316,16 +330,19 @@ describe("unit", () => {
     );
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe(
+      assert.strictEqual(
+        calledArg?.["message"],
         "Header did not start with correct identifier. Expected BAR but not found in options.header"
       );
     }
   });
 
-  test("fails if unix timestamp not found", async () => {
+  it("fails if unix timestamp not found", async () => {
     const middleware = HMAC(SECRET);
 
     await middleware(
@@ -337,16 +354,19 @@ describe("unit", () => {
     );
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe(
+      assert.strictEqual(
+        calledArg?.["message"],
         "Unix timestamp was not present in header"
       );
     }
   });
 
-  test("fails if time difference too great", async () => {
+  it("fails if time difference too great", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => 1573508732400;
 
@@ -355,10 +375,13 @@ describe("unit", () => {
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe(
+      assert.strictEqual(
+        calledArg?.["message"],
         "Time difference between generated and requested time is too great"
       );
     }
@@ -366,7 +389,7 @@ describe("unit", () => {
     global.Date.now = originalDateNow;
   });
 
-  test("fails if time difference too great with custom time", async () => {
+  it("fails if time difference too great with custom time", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => 1573591800000;
 
@@ -376,10 +399,13 @@ describe("unit", () => {
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe(
+      assert.strictEqual(
+        calledArg?.["message"],
         "Time difference between generated and requested time is too great"
       );
     }
@@ -387,7 +413,7 @@ describe("unit", () => {
     global.Date.now = originalDateNow;
   });
 
-  test("passes if within maxInterval", async () => {
+  it("passes if within maxInterval", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => 1573588200000;
 
@@ -396,12 +422,12 @@ describe("unit", () => {
 
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
 
     global.Date.now = originalDateNow;
   });
 
-  test("fails if time before timestamp in hmac", async () => {
+  it("fails if time before timestamp in hmac", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => 1542055800000;
 
@@ -410,10 +436,13 @@ describe("unit", () => {
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe(
+      assert.strictEqual(
+        calledArg?.["message"],
         "Time difference between generated and requested time is too great"
       );
     }
@@ -421,7 +450,7 @@ describe("unit", () => {
     global.Date.now = originalDateNow;
   });
 
-  test("passes if time before timestamp in hmac but minInterval is configured", async () => {
+  it("passes if time before timestamp in hmac but minInterval is configured", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => 1573504736300;
 
@@ -429,12 +458,12 @@ describe("unit", () => {
 
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
 
     global.Date.now = originalDateNow;
   });
 
-  test("fails if missing hmac digest", async () => {
+  it("fails if missing hmac digest", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -449,10 +478,13 @@ describe("unit", () => {
     );
 
     const calledArgs = spies.next.mock.calls.pop();
-    const calledArg = calledArgs?.[0];
-    expect(calledArg).toBeInstanceOf(AuthError);
+    const calledArg = Array.isArray(calledArgs?.arguments)
+      ? calledArgs?.arguments[0]
+      : undefined;
+    assert(calledArg instanceof AuthError);
     if (checkArgMessage(calledArg)) {
-      expect(calledArg?.["message"]).toBe(
+      assert.strictEqual(
+        calledArg?.["message"],
         "HMAC digest was not present in header"
       );
 
@@ -460,7 +492,7 @@ describe("unit", () => {
     }
   });
 
-  test("passes hmac with empty object as body", async () => {
+  it("passes hmac with empty object as body", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -484,12 +516,12 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
 
     global.Date.now = originalDateNow;
   });
 
-  test("passes hmac with basic object as body", async () => {
+  it("passes hmac with basic object as body", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -515,12 +547,12 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
 
     global.Date.now = originalDateNow;
   });
 
-  test("passes hmac with complex object as body", async () => {
+  it("passes hmac with complex object as body", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -546,12 +578,12 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
 
     global.Date.now = originalDateNow;
   });
 
-  test("passes hmac with empty array as body", async () => {
+  it("passes hmac with empty array as body", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -577,12 +609,12 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
 
     global.Date.now = originalDateNow;
   });
 
-  test("passes hmac with array as body", async () => {
+  it("passes hmac with array as body", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -608,12 +640,12 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
 
     global.Date.now = originalDateNow;
   });
 
-  test("hmac with async dynamic secret", async () => {
+  it("hmac with async dynamic secret", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -642,12 +674,12 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
 
     global.Date.now = originalDateNow;
   });
 
-  test("hmac correctly throws error if dynamic secret function returns undefined", async () => {
+  it("hmac correctly throws error if dynamic secret function returns undefined", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -655,7 +687,8 @@ describe("unit", () => {
 
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-    expect(spies.next).toHaveBeenCalledWith(
+    assert.deepStrictEqual(
+      spies.next.mock.calls[0].arguments[0],
       new AuthError(
         "Invalid secret. Expected non-empty string but got 'undefined' (type: undefined)"
       )
@@ -664,7 +697,7 @@ describe("unit", () => {
     global.Date.now = originalDateNow;
   });
 
-  test("hmac correctly throws error if dynamic secret function returns array", async () => {
+  it("hmac correctly throws error if dynamic secret function returns array", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -673,7 +706,8 @@ describe("unit", () => {
 
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-    expect(spies.next).toHaveBeenCalledWith(
+    assert.deepStrictEqual(
+      spies.next.mock.calls[0].arguments[0],
       new AuthError(
         "Invalid secret. Expected non-empty string but got '1,2' (type: object)"
       )
@@ -682,7 +716,7 @@ describe("unit", () => {
     global.Date.now = originalDateNow;
   });
 
-  test("hmac correctly throws error if dynamic secret function returns empty string", async () => {
+  it("hmac correctly throws error if dynamic secret function returns empty string", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -690,7 +724,8 @@ describe("unit", () => {
 
     await middleware(mockedRequest() as Request, {} as Response, spies.next);
 
-    expect(spies.next).toHaveBeenCalledWith(
+    assert.deepStrictEqual(
+      spies.next.mock.calls[0].arguments[0],
       new AuthError(
         "Invalid secret. Expected non-empty string but got '' (type: string)"
       )
@@ -699,7 +734,7 @@ describe("unit", () => {
     global.Date.now = originalDateNow;
   });
 
-  test("hmac correctly handles differently ordered json", async () => {
+  it("hmac correctly handles differently ordered json", async () => {
     const originalDateNow = Date.now.bind(global.Date);
     global.Date.now = () => TIME;
 
@@ -725,74 +760,82 @@ describe("unit", () => {
       spies.next
     );
 
-    expect(spies.next).toHaveBeenCalledWith();
+    assert.strictEqual(spies.next.mock.calls.length, 1);
 
     global.Date.now = originalDateNow;
   });
 
   // Some users aren't going to be using TS, we need to ensure these test still work even though you can't expose the error if you use TS
 
-  test("passing incorrect secret throws an error", () => {
-    expect(() => HMAC("")).toThrowError(
+  it("passing incorrect secret throws an error", () => {
+    assert.throws(
+      () => HMAC(""),
       new TypeError(
         `Invalid value provided for property secret. Expected non-empty string or function but got '' (type: string)`
       )
     );
-    // @ts-ignore
-    expect(() => HMAC(23)).toThrowError(
+
+    assert.throws(
+      // @ts-ignore
+      () => HMAC(23),
       new TypeError(
         `Invalid value provided for property secret. Expected non-empty string or function but got '23' (type: number)`
       )
     );
   });
 
-  test("passing incorrect algorithm throws an error", () => {
-    expect(() => HMAC(SECRET, { algorithm: "sha111" })).toThrowError(
+  it("passing incorrect algorithm throws an error", () => {
+    assert.throws(
+      () => HMAC(SECRET, { algorithm: "sha111" }),
       new TypeError(
         `Invalid value provided for property options.algorithm. Expected value from crypto.getHashes() but got sha111 (type: string)`
       )
     );
   });
 
-  test("passing incorrect identifier throws an error", () => {
-    // @ts-ignore
-    expect(() => HMAC(SECRET, { identifier: 123 })).toThrowError(
+  it("passing incorrect identifier throws an error", () => {
+    assert.throws(
+      // @ts-ignore
+      () => HMAC(SECRET, { identifier: 123 }),
       new TypeError(
         `Invalid value provided for property options.identifier. Expected non-empty string but got '123' (type: number)`
       )
     );
   });
 
-  test("passing incorrect header throws an error", () => {
-    // @ts-ignore
-    expect(() => HMAC(SECRET, { header: 123 })).toThrowError(
+  it("passing incorrect header throws an error", () => {
+    assert.throws(
+      // @ts-ignore
+      () => HMAC(SECRET, { header: 123 }),
       new TypeError(
         `Invalid value provided for property options.header. Expected non-empty string but got '123' (type: number)`
       )
     );
   });
 
-  test("passing incorrect maxInterval throws an error", () => {
-    // @ts-ignore
-    expect(() => HMAC(SECRET, { maxInterval: "abc" })).toThrowError(
+  it("passing incorrect maxInterval throws an error", () => {
+    assert.throws(
+      // @ts-ignore
+      () => HMAC(SECRET, { maxInterval: "abc" }),
       new TypeError(
         `Invalid value provided for property options.maxInterval. Expected number but got 'abc' (type: string)`
       )
     );
   });
 
-  test("passing incorrect minInterval throws an error", () => {
-    // @ts-ignore
-    expect(() => HMAC(SECRET, { minInterval: "abc" })).toThrowError(
+  it("passing incorrect minInterval throws an error", () => {
+    assert.throws(
+      // @ts-ignore
+      () => HMAC(SECRET, { minInterval: "abc" }),
       new TypeError(
         `Invalid value provided for optional property options.minInterval. Expected positive number but got 'abc' (type: string)`
       )
     );
   });
 
-  test("passing negative number for minInterval throws an error", () => {
-    // @ts-ignore
-    expect(() => HMAC(SECRET, { minInterval: -1 })).toThrowError(
+  it("passing negative number for minInterval throws an error", () => {
+    assert.throws(
+      () => HMAC(SECRET, { minInterval: -1 }),
       new TypeError(
         `Invalid value provided for optional property options.minInterval. Expected positive number but got '-1' (type: number)`
       )
