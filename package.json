@@ -20,7 +20,7 @@
   "main": "./dist/index.js",
   "typings": "./dist",
   "scripts": {
-    "prepare": "tsc",
+    "prepack": "tsc",
     "docs": "yarn typedoc src",
     "lint:check": "yarn eslint",
     "lint:fix": "yarn eslint --fix",
