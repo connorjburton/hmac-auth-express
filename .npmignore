@@ -4,7 +4,6 @@ docs
 src
 tests
 tsconfig.json
-yarn-error.log
 benchmark
 .prettierignore
 .husky

@@ -18,17 +18,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
-        run: yarn
+        run: npm ci
       - name: Check Linting
-        run: yarn lint:check
+        run: npm run lint:check
       - name: Check Coding Style
-        run: yarn style:check
+        run: npm run style:check
       - name: Run benchmark
-        run: yarn benchmark
+        run: npm run benchmark
       - name: Test with Coverage
         run: |
           # Check coverage, if coverage is below 100% for any files exit & print a message
-          yarn test --experimental-test-coverage > test-output.txt
+          npm run test -- --experimental-test-coverage > test-output.txt
 
           cat test-output.txt
 
