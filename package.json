@@ -1,7 +1,7 @@
 {
   "name": "hmac-auth-express",
   "type": "module",
-  "version": "8.3.5",
+  "version": "9.0.0",
   "description": "Express middleware for HMAC authentication",
   "keywords": [
     "nodejs",
