@@ -1,3 +1,15 @@
+## [8.3.5](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.4...v8.3.5) (2023-09-17)
+
+
+### Bug Fixes
+
+* use file extension to meet ts requirementnts ([5e867cb](https://github.com/connorjburton/hmac-auth-express/commit/5e867cb110d8021a7b55065e006543f19d44bc1a))
+
+
+### Reverts
+
+* Revert "chore: debug gh action for exit code" ([f59439d](https://github.com/connorjburton/hmac-auth-express/commit/f59439d35e8fadc3721655cbf178cb3938654ef4))
+
 ## [8.3.4](https://github.com/connorjburton/hmac-auth-express/compare/v8.3.3...v8.3.4) (2023-02-14)
 
 
