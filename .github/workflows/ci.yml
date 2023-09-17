@@ -32,7 +32,7 @@ jobs:
             }
             {
               for (i=2; i<NF; i++) {
-                if ($i+0 < 100) {
+                if ($i+0 == 100) {
                   status=1;
                   printf "%s has less than 100%% coverage in all criterias\n", $1;
                   exit status;
