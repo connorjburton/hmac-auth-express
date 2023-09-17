@@ -22,11 +22,11 @@
 <li>:books: Support for all hash algorithms</li>
 <li>:lock: Replay attacks prevention</li>
 </ul>
-<a id="md:installation" class="tsd-anchor"></a><h2><a href="#md:installation">Installation</a></h2><p><strong>yarn</strong></p>
-<p><code>yarn add hmac-auth-express</code></p>
-<p><strong>npm</strong></p>
+<a id="md:installation" class="tsd-anchor"></a><h2><a href="#md:installation">Installation</a></h2><p><strong>npm</strong></p>
 <p><code>npm install hmac-auth-express</code></p>
-<a id="md:type-documentation" class="tsd-anchor"></a><h2><a href="#md:type-documentation">Type documentation</a></h2><p><a href="https://connorjburton.github.io/hmac-auth-express">View the documentation online here</a>, or run <code>yarn docs</code> in the repository.</p>
+<p><strong>yarn</strong></p>
+<p><code>yarn add hmac-auth-express</code></p>
+<a id="md:type-documentation" class="tsd-anchor"></a><h2><a href="#md:type-documentation">Type documentation</a></h2><p><a href="https://connorjburton.github.io/hmac-auth-express">View the documentation online here</a>, or run <code>npm run docs</code> in the repository.</p>
 <a id="md:usage" class="tsd-anchor"></a><h2><a href="#md:usage">Usage</a></h2><a id="md:importing-the-package" class="tsd-anchor"></a><h4><a href="#md:importing-the-package">Importing the package</a></h4><p>Supports both CommonJS &amp; ECMAScript modules.</p>
 <p><em>CommonJS</em></p>
 <pre><code class="language-javascript"><span class="hl-0">const</span><span class="hl-1"> { </span><span class="hl-2">HMAC</span><span class="hl-1"> } = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&quot;hmac-auth-express&quot;</span><span class="hl-1">);</span>
@@ -116,7 +116,7 @@
 <p>You can provide your own order function with your own implementation if you wish.</p>
 <a id="md:limitations" class="tsd-anchor"></a><h2><a href="#md:limitations">Limitations</a></h2><p>This package does not support plain text, form or multi part POST bodies and is primarily intended to be used for GET requests and JSON bodies. <a href="https://github.com/connorjburton/hmac-auth-express/issues/61">Plain text support</a> is planned.</p>
 <p>Be mindful of what algorithm you choose to use, this package will not stop you attempting to use an algorithm that is not supported by OpenSSL. <a href="https://nodejs.org/en/knowledge/cryptography/how-to-use-crypto-module/#hash-algorithms-that-work-with-crypto">See the Node.js website for more information</a>.</p>
-<a id="md:performance" class="tsd-anchor"></a><h2><a href="#md:performance">Performance</a></h2><p>You can run your own benchmarks by cloning the repository and running <code>yarn benchmark</code>. Below is an example result, however please run the benchmarks on your intended target machine for accurate results. Node.js &gt;16 is required to run the benchmark tool.</p>
+<a id="md:performance" class="tsd-anchor"></a><h2><a href="#md:performance">Performance</a></h2><p>You can run your own benchmarks by cloning the repository and running <code>npm run benchmark</code>. Below is an example result, however please run the benchmarks on your intended target machine for accurate results. Node.js &gt;16 is required to run the benchmark tool.</p>
 <table>
 <thead>
 <tr>
@@ -140,8 +140,8 @@
 <p>In the future we may expose the core middleware logic standalone, so that you can inject this yourself in any middleware function signature of your choosing.</p>
 <a id="md:tests" class="tsd-anchor"></a><h2><a href="#md:tests">Tests</a></h2><p>100% code coveage is a hard requirement of this package, enforced with automated coverage checks. The <a href="https://github.com/connorjburton/hmac-auth-express/blob/master/.github/workflows/ci.yml">GitHub action</a> will use <code>awk</code> to ensure that the action fails if any coverage criteria is less than 100% for any source file.</p>
 <p>Running the tests requires Node.js v20 or higher.</p>
-<p>To run tests run <code>yarn test</code></p>
-<p>To run tests with coverage run <code>yarn test --experimental-test-coverage</code></p>
+<p>To run tests run <code>npm run test</code></p>
+<p>To run tests with coverage run <code>npm run test -- --experimental-test-coverage</code></p>
 <a id="md:faqs" class="tsd-anchor"></a><h2><a href="#md:faqs">FAQs</a></h2><p><em>Why is HMAC uppercase?</em> HMAC is an acronym for <a href="https://en.wikipedia.org/wiki/HMAC">hash-based message authentication code</a>. You can import the package as below if you need to conform to style conventions.</p>
 <pre><code class="language-javascript"><span class="hl-5">import</span><span class="hl-1"> { </span><span class="hl-6">HMAC</span><span class="hl-1"> </span><span class="hl-5">as</span><span class="hl-1"> </span><span class="hl-6">hmac</span><span class="hl-1"> } </span><span class="hl-5">from</span><span class="hl-1"> </span><span class="hl-4">&quot;hmac-auth-express&quot;</span><span class="hl-1">;</span>
 </code><button>Copy</button></pre>
