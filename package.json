@@ -27,7 +27,7 @@
     "style:check": "yarn prettier . --check",
     "style:fix": "yarn prettier . --write",
     "test": "./scripts/run-tests.sh",
-    "benchmark": "ts-node ./benchmark/index.ts"
+    "benchmark": "./scripts/run-benchmark.sh"
   },
   "repository": {
     "type": "git",
